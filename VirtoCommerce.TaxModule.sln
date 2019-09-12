@@ -1,0 +1,49 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{28181B78-3C9B-4555-81FA-26A0002E51A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.TaxModule.Core", "src\VirtoCommerce.TaxModule.Core\VirtoCommerce.TaxModule.Core.csproj", "{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.TaxModule.Data", "src\VirtoCommerce.TaxModule.Data\VirtoCommerce.TaxModule.Data.csproj", "{BC3D4D99-5814-4871-B679-95F05C7BEAAC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.TaxModule.Web", "src\VirtoCommerce.TaxModule.Web\VirtoCommerce.TaxModule.Web.csproj", "{7F98EEBA-FE64-43FD-9AA2-A47D60762731}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{AF209CF3-7D68-4C3C-8281-DD50D43088F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF209CF3-7D68-4C3C-8281-DD50D43088F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF209CF3-7D68-4C3C-8281-DD50D43088F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC3D4D99-5814-4871-B679-95F05C7BEAAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC3D4D99-5814-4871-B679-95F05C7BEAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC3D4D99-5814-4871-B679-95F05C7BEAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC3D4D99-5814-4871-B679-95F05C7BEAAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6} = {F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}
+		{BC3D4D99-5814-4871-B679-95F05C7BEAAC} = {F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}
+		{7F98EEBA-FE64-43FD-9AA2-A47D60762731} = {F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {539C1A59-88A4-4DF7-BA87-1DDB11CE8246}
+	EndGlobalSection
+EndGlobal
