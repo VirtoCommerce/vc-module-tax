@@ -14,6 +14,7 @@ namespace VirtoCommerce.TaxModule.Data.Provider
         {
             Code = "FixedRate";
         }
+
         private decimal Rate
         {
             get

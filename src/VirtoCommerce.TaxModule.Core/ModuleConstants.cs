@@ -18,7 +18,6 @@ namespace VirtoCommerce.TaxModule.Core
                     IsDictionary = true,
                 };
 
-
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -56,6 +55,4 @@ namespace VirtoCommerce.TaxModule.Core
             }
         }
     }
-
-
 }

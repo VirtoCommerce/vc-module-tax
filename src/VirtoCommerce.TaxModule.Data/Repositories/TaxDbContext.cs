@@ -24,7 +24,7 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
 
             modelBuilder.Entity<StoreTaxProviderEntity>().HasIndex(x => new { x.TypeName, x.StoreId })
                       .HasName("IX_StoreTaxProviderEntity_TypeName_StoreId")
-                      .IsUnique(true);
+                      .IsUnique();
             #endregion
         }
     }

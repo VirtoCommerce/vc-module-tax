@@ -6,7 +6,6 @@ namespace VirtoCommerce.TaxModule.Core.Model
 {
     public class TaxEvaluationContext : Entity, IEvaluationContext
     {
-
         public string StoreId { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
@@ -16,6 +15,5 @@ namespace VirtoCommerce.TaxModule.Core.Model
         public Address Address { get; set; }
         public string Currency { get; set; }
         public ICollection<TaxLine> Lines { get; set; } = new List<TaxLine>();
-
     }
 }

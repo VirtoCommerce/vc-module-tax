@@ -37,7 +37,6 @@ namespace VirtoCommerce.TaxModule.Web.JsonConverters
                 {
                     throw new NotSupportedException("Unknown tax provider type: " + typeName);
                 }
-
             }
             else
             {

@@ -120,7 +120,6 @@ namespace VirtoCommerce.TaxModule.Data.Services
             }
 
             await _settingManager.DeepRemoveSettingsAsync(taxProviders);
-
         }
     }
 }
