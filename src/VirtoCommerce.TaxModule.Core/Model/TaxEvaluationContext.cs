@@ -7,10 +7,13 @@ namespace VirtoCommerce.TaxModule.Core.Model
     public class TaxEvaluationContext : Entity, IEvaluationContext
     {
         public string StoreId { get; set; }
+        public Store Store { get; set; }
+
         public string Code { get; set; }
         public string Type { get; set; }
 
         public string CustomerId { get; set; }
+        public Customer Customer { get; set; }
         public string OrganizationId { get; set; }
         public Address Address { get; set; }
         public string Currency { get; set; }
