@@ -21,7 +21,7 @@
         <group>commerce</group>
     </groups>
     <projectUrl>https://virtocommerce.com/apps/extensions/virto-tax-module</projectUrl>
-    <iconUrl>Modules/$(VirtoCommerce.Tax)/Content/logo.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/VirtoCommerce/vc-module-tax/release/3.0.0/src/VirtoCommerce.TaxModule.Web/Content/logo.png</iconUrl>
     <releaseNotes></releaseNotes>
     <copyright>Copyright © 2011-2019 Virto Commerce. All rights reserved</copyright>
     <tags>stores</tags>
