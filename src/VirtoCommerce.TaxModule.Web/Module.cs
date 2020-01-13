@@ -53,7 +53,7 @@ namespace VirtoCommerce.TaxModule.Web
             taxProviderRegistrar.RegisterTaxProvider<FixedRateTaxProvider>();
             settingsRegistrar.RegisterSettingsForType(Core.ModuleConstants.Settings.FixedTaxProviderSettings.AllSettings, typeof(FixedRateTaxProvider).Name);
 
-            var mvcJsonOptions = applicationBuilder.ApplicationServices.GetService<IOptions<MvcJsonOptions>>();
+            var mvcJsonOptions = applicationBuilder.ApplicationServices.GetService<IOptions<MvcNewtonsoftJsonOptions>>();
             mvcJsonOptions.Value.SerializerSettings.Converters.Add(new PolymorphicJsonConverter());
 
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
