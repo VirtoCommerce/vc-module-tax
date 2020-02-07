@@ -10,9 +10,9 @@ namespace VirtoCommerce.TaxModule.Data.Provider
 {
     public class FixedRateTaxProvider : TaxProvider
     {
-        public FixedRateTaxProvider()
+        public FixedRateTaxProvider() : base("FixedRate")
         {
-            Code = "FixedRate";
+            
         }
 
         private decimal Rate
