@@ -12,6 +12,10 @@ namespace VirtoCommerce.TaxModule.Core.Model
     /// </summary>
     public abstract class TaxProvider : Entity, IHasSettings, ICloneable
     {
+        protected TaxProvider()
+        {
+            Settings = Array.Empty<ObjectSettingEntry>();
+        }
         public string StoreId { get; set; }
         /// <summary>
         /// Method identity property (System name)
