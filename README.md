@@ -9,6 +9,7 @@ The tax module is an engine for tax calculations and allows doing the following:
 1. Display the list of available tax providers on UI;
 1. Edit tax provider settings on UI;
 1. Connect the tax providers to the selected Store;
+1. API to work with tax provider list.
 
 ## Scenarios
 
