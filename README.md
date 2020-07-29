@@ -1,8 +1,11 @@
-# vc-module-tax
 
-## Overview
+# Overview
 
-The tax module is an engine for tax calculations and allows doing the following:
+The Tax Module provides the ability to extend tax provider list with custom providers and also provides an interface and API for managing these tax providers.
+
+The tax module is an engine for tax calculations.
+
+## Key Features
 
 1. Extend the custom tax providers;
 1. Tax providers registration using the code;
@@ -11,32 +14,29 @@ The tax module is an engine for tax calculations and allows doing the following:
 1. Connect the tax providers to the selected Store;
 1. API to work with tax provider list.
 
-## Scenarios
+## Documentation
 
-### View Tax Provider
+1. [Tax Module Document](/docs/index.md)
+1. [View on Github](https://github.com/VirtoCommerce/vc-module-tax/tree/master)
 
-1. Go to More->Stores->select the Store;
-1. On Store details blade select the 'Tax providers' widget;
-1. The list available tax providers will be displayed on 'Tax providers' blade;
-1. Select a tax provider from the list;
-1. The following details will be displayed: 
+## References
 
-     1. Tax provider name;
-     1. Tax provider code;
-     'Is active' button- used to activate or de-activate the tax provider;
-     1. 'Settings' widget.
+1. Deploy: https://virtocommerce.com/docs/latest/developer-guide/deploy-module-from-source-code/
 
-![Tax providers](docs/media/screen-tax-providers.png)
-![Tax providers details](docs/media/screen-tax-provider-details.png)
+1. Installation: https://www.virtocommerce.com/docs/latest/user-guide/modules/
 
-### Edit Tax Provider Settings
+1. Home: https://virtocommerce.com
 
-1. Select the 'Settings' widget on tax provider details blade;
-1. The following default settings can be edited on UI if needed:
+1. Community: https://www.virtocommerce.org
 
-     1. Company code in Avalara system;
-     1. Link to Avalara API service;
-     1. Link to Avalara admin page.
-1. Save the changes if any editing was made.
+1. [Download Latest Release](https://github.com/VirtoCommerce/vc-module-tax/releases)
 
-![Tax provider settings](docs/media/screen-tax-provider-settings.png)
+## License
+
+Copyright (c) Virto Solutions LTD. All rights reserved.
+
+Licensed under the Virto Commerce Open Software License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://virtocommerce.com/opensourcelicense
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
