@@ -24,7 +24,7 @@
   <iconUrl>Modules/$(VirtoCommerce.Tax)/Content/logo.png</iconUrl>
   <releaseNotes>
   </releaseNotes>
-  <copyright>Copyright В© 2011-2020 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
   <tags>stores</tags>
   <assemblyFile>VirtoCommerce.TaxModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.TaxModule.Web.Module, VirtoCommerce.TaxModule.Web</moduleType>
