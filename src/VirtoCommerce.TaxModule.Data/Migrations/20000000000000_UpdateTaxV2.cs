@@ -19,6 +19,19 @@ namespace VirtoCommerce.TaxModule.Data.Migrations
                     BEGIN
                         UPDATE StoreTaxProvider SET [TypeName] = 'FixedRateTaxProvider' WHERE [Code] = 'FixedRate'
 				    END");
+
+            migrationBuilder.Sql(@"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__MigrationHistory')) AND
+                    (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PlatformSetting'))
+                    BEGIN
+                        UPDATE [PlatformSetting] SET
+                            ObjectId = [StoreTaxProvider].Id,
+                            ObjectType = 'FixedRateTaxProvider'
+                        FROM [PlatformSetting]
+                        INNER JOIN [StoreTaxProvider] ON 
+                            [StoreTaxProvider].[StoreId] = [PlatformSetting].[ObjectId] AND 
+                            [StoreTaxProvider].[TypeName] = 'FixedRateTaxProvider'
+                        WHERE [PlatformSetting].[Name] LIKE 'VirtoCommerce.Core.FixedTaxRateProvider.%';
+				    END");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
