@@ -56,7 +56,7 @@ angular.module('virtoCommerce.taxModule')
         $scope.formScope = form;
     };
 
-    blade.headIcon = 'fa-archive';
+    blade.headIcon = 'fa fa-archive';
 
     blade.toolbarCommands = [
         {

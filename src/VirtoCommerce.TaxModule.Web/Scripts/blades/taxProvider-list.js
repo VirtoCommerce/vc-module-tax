@@ -39,7 +39,7 @@ angular.module('virtoCommerce.taxModule').controller('virtoCommerce.taxModule.ta
         }
     ];
 
-    blade.headIcon = 'fa-archive';
+    blade.headIcon = 'fa fa-archive';
     blade.refresh();
 
 }]);
