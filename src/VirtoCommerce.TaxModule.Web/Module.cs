@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Extensions;
@@ -18,7 +19,6 @@ using VirtoCommerce.TaxModule.Data.ExportImport;
 using VirtoCommerce.TaxModule.Data.Provider;
 using VirtoCommerce.TaxModule.Data.Repositories;
 using VirtoCommerce.TaxModule.Data.Services;
-using VirtoCommerce.TaxModule.Web.JsonConverters;
 
 namespace VirtoCommerce.TaxModule.Web
 {
@@ -49,12 +49,11 @@ namespace VirtoCommerce.TaxModule.Web
             var settingsRegistrar = applicationBuilder.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
             settingsRegistrar.RegisterSettings(Core.ModuleConstants.Settings.AllSettings, ModuleInfo.Id);
 
+            PolymorphJsonConverter.RegisterTypeForDiscriminator(typeof(TaxProvider), nameof(TaxProvider.TypeName));
+
             var taxProviderRegistrar = applicationBuilder.ApplicationServices.GetRequiredService<ITaxProviderRegistrar>();
             taxProviderRegistrar.RegisterTaxProvider<FixedRateTaxProvider>();
             settingsRegistrar.RegisterSettingsForType(Core.ModuleConstants.Settings.FixedTaxProviderSettings.AllSettings, typeof(FixedRateTaxProvider).Name);
-
-            var mvcJsonOptions = applicationBuilder.ApplicationServices.GetService<IOptions<MvcNewtonsoftJsonOptions>>();
-            mvcJsonOptions.Value.SerializerSettings.Converters.Add(new PolymorphicJsonConverter());
 
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
