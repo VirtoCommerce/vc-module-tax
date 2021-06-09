@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.TaxModule.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.TaxModule.Web", "src\VirtoCommerce.TaxModule.Web\VirtoCommerce.TaxModule.Web.csproj", "{7F98EEBA-FE64-43FD-9AA2-A47D60762731}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.TaxModule.Data.Tests", "tests\VirtoCommerce.TaxModule.Data.Tests\VirtoCommerce.TaxModule.Data.Tests.csproj", "{EE39D5ED-2389-49F3-A979-F05BD0692BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F98EEBA-FE64-43FD-9AA2-A47D60762731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE39D5ED-2389-49F3-A979-F05BD0692BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE39D5ED-2389-49F3-A979-F05BD0692BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE39D5ED-2389-49F3-A979-F05BD0692BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE39D5ED-2389-49F3-A979-F05BD0692BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{35D5FF9D-6BCD-446F-9D5B-F0218F59C2A6} = {F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}
 		{BC3D4D99-5814-4871-B679-95F05C7BEAAC} = {F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}
 		{7F98EEBA-FE64-43FD-9AA2-A47D60762731} = {F9C8BFA9-12E3-4CFA-80AC-C28E28A6A8D4}
+		{EE39D5ED-2389-49F3-A979-F05BD0692BB2} = {28181B78-3C9B-4555-81FA-26A0002E51A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {539C1A59-88A4-4DF7-BA87-1DDB11CE8246}
