@@ -90,5 +90,10 @@ namespace VirtoCommerce.TaxModule.Data.Services
             }
             return sortInfos;
         }
+
+        public Task<TaxProviderSearchResult> SearchTaxProvidersAsync(TaxProviderSearchCriteria criteria)
+        {
+            return SearchAsync(criteria);
+        }
     }
 }

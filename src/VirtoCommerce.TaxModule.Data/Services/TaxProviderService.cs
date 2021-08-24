@@ -55,9 +55,30 @@ namespace VirtoCommerce.TaxModule.Data.Services
             await _settingManager.DeepSaveSettingsAsync(models);
         }
 
+        protected override async Task AfterDeleteAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
+        {
+            await _settingManager.DeepRemoveSettingsAsync(models);
+        }
+
         protected override Task<IEnumerable<StoreTaxProviderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
         {
             return ((ITaxRepository)repository).GetByIdsAsync(ids);
+        }
+
+        public async Task<TaxProvider[]> GetByIdsAsync(string[] ids, string responseGroup)
+        {
+            var result = await base.GetByIdsAsync(ids);
+            return result.ToArray();
+        }
+
+        public async Task SaveChangesAsync(TaxProvider[] taxProviders)
+        {
+            await base.SaveChangesAsync(taxProviders);
+        }
+
+        public async Task DeleteAsync(string[] ids)
+        {
+            await base.DeleteAsync(ids);
         }
     }
 }

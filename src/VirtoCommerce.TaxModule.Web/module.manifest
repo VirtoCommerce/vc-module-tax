@@ -3,7 +3,7 @@
     <id>VirtoCommerce.Tax</id>
     <version>3.9.0</version>
     <version-tag />
-    <platformVersion>3.74.0</platformVersion>
+    <platformVersion>3.75.0</platformVersion>
     <title>Tax module</title>
     <description>Tax and fees</description>
     <authors>
