@@ -9,21 +9,22 @@ using VirtoCommerce.Platform.Data.ExportImport;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Model.Search;
 using VirtoCommerce.TaxModule.Core.Services;
+using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.TaxModule.Data.ExportImport
 {
     public class TaxExportImport
     {
-        private readonly ITaxProviderService _taxProviderService;
-        private readonly ITaxProviderSearchService _taxProviderSearchService;
+        private readonly ICrudService<TaxProvider> _taxProviderService;
+        private readonly ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider> _taxProviderSearchService;
         private readonly JsonSerializer _jsonSerializer;
         private readonly int _batchSize = 50;
 
         public TaxExportImport(ITaxProviderService taxProviderService, ITaxProviderSearchService taxProviderSearchService, JsonSerializer jsonSerializer)
         {
-            _taxProviderService = taxProviderService;
+            _taxProviderService = (ICrudService<TaxProvider>)taxProviderService;
             _jsonSerializer = jsonSerializer;
-            _taxProviderSearchService = taxProviderSearchService;
+            _taxProviderSearchService = (ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider>)taxProviderSearchService;
         }
 
         public async Task DoExportAsync(Stream outStream, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -49,7 +50,7 @@ namespace VirtoCommerce.TaxModule.Data.ExportImport
                     searchCriteria.Skip = skip;
                     searchCriteria.WithoutTransient = true;
 
-                    var searchResult = await _taxProviderSearchService.SearchTaxProvidersAsync(searchCriteria);
+                    var searchResult = await _taxProviderSearchService.SearchAsync(searchCriteria);
                     return (GenericSearchResult<TaxProvider>)searchResult;
                 }, (processedCount, totalCount) =>
                 {
