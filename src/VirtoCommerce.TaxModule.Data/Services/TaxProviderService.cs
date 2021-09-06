@@ -50,19 +50,19 @@ namespace VirtoCommerce.TaxModule.Data.Services
             return null;
         }
 
-        protected override async Task AfterSaveChangesAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
+        protected override Task AfterSaveChangesAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
         {
-            await _settingManager.DeepSaveSettingsAsync(models);
+            return _settingManager.DeepSaveSettingsAsync(models);
         }
 
-        protected override async Task AfterDeleteAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
+        protected override Task AfterDeleteAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
         {
-            await _settingManager.DeepRemoveSettingsAsync(models);
+            return _settingManager.DeepRemoveSettingsAsync(models);
         }
 
-        protected async override Task<IEnumerable<StoreTaxProviderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
+        protected override Task<IEnumerable<StoreTaxProviderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
         {
-            return await ((ITaxRepository)repository).GetByIdsAsync(ids);
+            return ((ITaxRepository)repository).GetByIdsAsync(ids);
         }
 
         public async Task<TaxProvider[]> GetByIdsAsync(string[] ids, string responseGroup)
@@ -71,14 +71,14 @@ namespace VirtoCommerce.TaxModule.Data.Services
             return result.ToArray();
         }
 
-        public async Task SaveChangesAsync(TaxProvider[] taxProviders)
+        public Task SaveChangesAsync(TaxProvider[] taxProviders)
         {
-            await base.SaveChangesAsync(taxProviders);
+            return base.SaveChangesAsync(taxProviders);
         }
 
-        public async Task DeleteAsync(string[] ids)
+        public Task DeleteAsync(string[] ids)
         {
-            await base.DeleteAsync(ids);
+            return base.DeleteAsync(ids);
         }
     }
 }
