@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.Platform.Core.Common;
@@ -7,7 +8,7 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
 {
     public interface ITaxRepository : IRepository
     {
-        IQueryable<StoreTaxProviderEntity> StoreTaxProviders { get; }
-        Task<StoreTaxProviderEntity[]> GetStoreTaxProviderByIdsAsync(string[] ids, string responseGroup = null);
+        IQueryable<StoreTaxProviderEntity> TaxProviders { get; }
+        Task<IEnumerable<StoreTaxProviderEntity>> GetByIdsAsync(IEnumerable<string> ids);
     }
 }

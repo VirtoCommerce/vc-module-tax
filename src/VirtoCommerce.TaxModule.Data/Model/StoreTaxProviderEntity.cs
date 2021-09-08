@@ -1,11 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.TaxModule.Core.Model;
 
 namespace VirtoCommerce.TaxModule.Data.Model
 {
-    public class StoreTaxProviderEntity : Entity
+    public class StoreTaxProviderEntity : Entity, IDataEntity<StoreTaxProviderEntity, TaxProvider>
     {
         [Required]
         [StringLength(128)]
@@ -28,33 +29,33 @@ namespace VirtoCommerce.TaxModule.Data.Model
 
         #endregion
 
-        public virtual TaxProvider ToModel(TaxProvider taxProvider)
+        public virtual TaxProvider ToModel(TaxProvider model)
         {
-            if (taxProvider == null)
-                throw new ArgumentNullException(nameof(taxProvider));
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
 
-            taxProvider.Id = Id;
-            taxProvider.IsActive = IsActive;
-            taxProvider.Code = Code;
-            taxProvider.LogoUrl = LogoUrl;
-            taxProvider.Priority = Priority;
-            taxProvider.StoreId = StoreId;
-            return taxProvider;
+            model.Id = Id;
+            model.IsActive = IsActive;
+            model.Code = Code;
+            model.LogoUrl = LogoUrl;
+            model.Priority = Priority;
+            model.StoreId = StoreId;
+            return model;
         }
 
-        public virtual StoreTaxProviderEntity FromModel(TaxProvider taxProvider, PrimaryKeyResolvingMap pkMap)
+        public virtual StoreTaxProviderEntity FromModel(TaxProvider model, PrimaryKeyResolvingMap pkMap)
         {
-            if (taxProvider == null)
-                throw new ArgumentNullException(nameof(taxProvider));
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
 
-            pkMap.AddPair(taxProvider, this);
-            Id = taxProvider.Id;
-            IsActive = taxProvider.IsActive;
-            Code = taxProvider.Code;
-            LogoUrl = taxProvider.LogoUrl;
-            Priority = taxProvider.Priority;
-            StoreId = taxProvider.StoreId;
-            TypeName = taxProvider.TypeName;
+            pkMap.AddPair(model, this);
+            Id = model.Id;
+            IsActive = model.IsActive;
+            Code = model.Code;
+            LogoUrl = model.LogoUrl;
+            Priority = model.Priority;
+            StoreId = model.StoreId;
+            TypeName = model.TypeName;
             return this;
         }
 

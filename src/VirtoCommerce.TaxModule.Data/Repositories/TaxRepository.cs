@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +13,11 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
         {
         }
 
-        #region IStoreRepository Members
+        public IQueryable<StoreTaxProviderEntity> TaxProviders => DbContext.Set<StoreTaxProviderEntity>();
 
-        public IQueryable<StoreTaxProviderEntity> StoreTaxProviders => DbContext.Set<StoreTaxProviderEntity>();
-
-        public async Task<StoreTaxProviderEntity[]> GetStoreTaxProviderByIdsAsync(string[] ids, string responseGroup = null)
+        public Task<IEnumerable<StoreTaxProviderEntity>> GetByIdsAsync(IEnumerable<string> ids)
         {
-            return await StoreTaxProviders.Where(x => ids.Contains(x.Id))
-                                          .ToArrayAsync();
+            return Task.FromResult<IEnumerable<StoreTaxProviderEntity>>(TaxProviders.Where(x => ids.Contains(x.Id)).ToList());
         }
-
-        #endregion
     }
 }
