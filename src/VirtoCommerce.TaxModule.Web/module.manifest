@@ -21,7 +21,7 @@
     <assemblyFile>VirtoCommerce.TaxModule.Web.dll</assemblyFile>
     <moduleType>VirtoCommerce.TaxModule.Web.Module, VirtoCommerce.TaxModule.Web</moduleType>
     <dependencies>
-        <dependency id="VirtoCommerce.Core" version="3.0.0" />
+        <dependency id="VirtoCommerce.Core" version="3.22.0" />
         <dependency id="VirtoCommerce.Store" version="3.0.0" />
     </dependencies>
     <groups>
