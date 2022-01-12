@@ -44,7 +44,7 @@ namespace VirtoCommerce.TaxModule.Data.Services
             {
                 entity.ToModel(taxProvider);
 
-                _settingManager.DeepLoadSettingsAsync(taxProvider);
+                _settingManager.DeepLoadSettingsAsync(taxProvider).GetAwaiter().GetResult();
                 return taxProvider;
             }
             return null;
