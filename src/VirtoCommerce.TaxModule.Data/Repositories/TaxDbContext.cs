@@ -23,7 +23,7 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
             modelBuilder.Entity<StoreTaxProviderEntity>().Property(x => x.StoreId).HasMaxLength(128);
 
             modelBuilder.Entity<StoreTaxProviderEntity>().HasIndex(x => new { x.TypeName, x.StoreId })
-                      .HasName("IX_StoreTaxProviderEntity_TypeName_StoreId")
+                      .HasDatabaseName("IX_StoreTaxProviderEntity_TypeName_StoreId")
                       .IsUnique();
             #endregion
         }
