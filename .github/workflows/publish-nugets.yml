@@ -35,4 +35,3 @@ jobs:
     secrets:
       envPAT: ${{ secrets.GITHUB_TOKEN }}
       nugetKey: ${{ secrets.NUGET_KEY }}
-
