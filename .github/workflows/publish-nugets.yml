@@ -17,7 +17,7 @@ jobs:
       sonarToken: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    uses: VirtoCommerce/.github/.github/workflows/build.yml@v3.200.12
+    uses: VirtoCommerce/.github/.github/workflows/build.yml@v3.200.13
     with:
       uploadPackage: 'true'
       uploadDocker: 'false'
