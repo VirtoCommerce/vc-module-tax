@@ -1,0 +1,61 @@
+{
+  "tax": {
+    "blades": {
+      "tax-provider-detail": {
+        "subtitle": "Редактировать налогового провайдера",
+        "labels": {
+          "name": "Имя",
+          "code": "Код",
+          "is-active": "Действующий",
+          "is-active-description": "Активируйте, чтобы установить этого налогового провайдера для магазина",
+          "settings": "Настройки"
+        },
+        "placeholders": {
+          "description": "Введите описание"
+        }
+      },
+      "tax-provider-list": {
+        "subtitle": "",
+        "labels": {
+          "is-active": "Действующий",
+          "tax-provider": "Налоговый провайдер",
+          "no-tax-providers": "Налоговые провайдеры не зарегистрированы",
+          "note": "Установите порядок отображения налоговых провайдеров в интернет-магазине. Перетащите, чтобы изменить порядок. Не забудьте включить расчет налога в настройках магазина!"
+        }
+      }
+    },
+    "dialogs": {
+      "tax-provider-save": {
+        "title": "Сохранить изменения",
+        "message": "Налоговый провайдер был изменен. Вы хотите сохранить изменения?"
+      }
+    },
+    "widgets": {
+      "storeTaxingWidget": {
+        "title": "Налоговые провайдеры",
+        "blade-subtitle": "Налоговые провайдеры"
+      }
+    },
+    "labels": {
+      "FixedRateTaxProvider": {
+        "name": "Фиксированная ставка",
+        "description": "Фиксированный процент ставки"
+      }
+    }
+  },
+  "settings": {
+    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+      "title": "Фиксированная ставка %",
+      "description": "Фиксированный процент ставки"
+    },
+    "VirtoCommerce.Core.General.TaxTypes": {
+      "title": "Виды налогов",
+      "description": "Виды налогов, имеющихся в системе"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Tax": {
+      "description": "Экспорт/Импорт настроек налоговых провайдеров"
+    }
+  }
+}
