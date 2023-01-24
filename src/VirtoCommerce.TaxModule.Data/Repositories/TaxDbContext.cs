@@ -1,3 +1,4 @@
+using System.Reflection;
 using EntityFrameworkCore.Triggers;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.TaxModule.Data.Model;
@@ -26,6 +27,25 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
                       .HasDatabaseName("IX_StoreTaxProviderEntity_TypeName_StoreId")
                       .IsUnique();
             #endregion
+
+            base.OnModelCreating(modelBuilder);
+
+
+            // Allows configuration for an entity type for different database types.
+            // Applies configuration from all <see cref="IEntityTypeConfiguration{TEntity}" in VirtoCommerce.TaxModule.Data.XXX project. /> 
+            switch (this.Database.ProviderName)
+            {
+                case "Pomelo.EntityFrameworkCore.MySql":
+                    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.TaxModule.Data.MySql"));
+                    break;
+                case "Npgsql.EntityFrameworkCore.PostgreSQL":
+                    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.TaxModule.Data.PostgreSql"));
+                    break;
+                case "Microsoft.EntityFrameworkCore.SqlServer":
+                    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.TaxModule.Data.SqlServer"));
+                    break;
+            }
+
         }
     }
 }

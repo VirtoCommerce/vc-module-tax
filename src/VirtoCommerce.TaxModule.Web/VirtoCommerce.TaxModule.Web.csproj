@@ -23,6 +23,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.TaxModule.Core\VirtoCommerce.TaxModule.Core.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.TaxModule.Data.MySql\VirtoCommerce.TaxModule.Data.MySql.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.TaxModule.Data.PostgreSql\VirtoCommerce.TaxModule.Data.PostgreSql.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.TaxModule.Data.SqlServer\VirtoCommerce.TaxModule.Data.SqlServer.csproj" />
     <ProjectReference Include="..\VirtoCommerce.TaxModule.Data\VirtoCommerce.TaxModule.Data.csproj" />
   </ItemGroup>
 </Project>

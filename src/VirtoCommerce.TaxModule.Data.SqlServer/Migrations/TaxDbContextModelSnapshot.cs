@@ -2,16 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.TaxModule.Data.Repositories;
 
-namespace VirtoCommerce.TaxModule.Data.Migrations
+namespace VirtoCommerce.TaxModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(TaxDbContext))]
-    [Migration("20000000000000_UpdateTaxV2")]
-    partial class UpdateTaxV2
+    partial class TaxDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
