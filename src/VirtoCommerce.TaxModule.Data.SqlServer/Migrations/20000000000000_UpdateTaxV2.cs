@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace VirtoCommerce.TaxModule.Data.Migrations
+namespace VirtoCommerce.TaxModule.Data.SqlServer.Migrations
 {
     public partial class UpdateTaxV2 : Migration
     {

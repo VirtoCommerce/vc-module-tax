@@ -14,23 +14,40 @@ using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Services;
 using VirtoCommerce.TaxModule.Data.ExportImport;
+using VirtoCommerce.TaxModule.Data.MySql;
+using VirtoCommerce.TaxModule.Data.PostgreSql;
 using VirtoCommerce.TaxModule.Data.Provider;
 using VirtoCommerce.TaxModule.Data.Repositories;
 using VirtoCommerce.TaxModule.Data.Services;
+using VirtoCommerce.TaxModule.Data.SqlServer;
 
 namespace VirtoCommerce.TaxModule.Web
 {
-    public class Module : IModule, IExportSupport, IImportSupport
+    public class Module : IModule, IExportSupport, IImportSupport, IHasConfiguration
     {
         public ManifestModuleInfo ModuleInfo { get; set; }
+        public IConfiguration Configuration { get; set; }
 
         private IApplicationBuilder _appBuilder;
         public void Initialize(IServiceCollection serviceCollection)
         {
             serviceCollection.AddDbContext<TaxDbContext>((provider, options) =>
             {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
+                var connectionString = Configuration.GetConnectionString(ModuleInfo.Id) ?? Configuration.GetConnectionString("VirtoCommerce");
+
+                switch (databaseProvider)
+                {
+                    case "MySql":
+                        options.UseMySqlDatabase(connectionString);
+                        break;
+                    case "PostgreSql":
+                        options.UsePostgreSqlDatabase(connectionString);
+                        break;
+                    default:
+                        options.UseSqlServerDatabase(connectionString);
+                        break;
+                }
             });
 
             serviceCollection.AddTransient<ITaxRepository, TaxRepository>();
@@ -57,9 +74,12 @@ namespace VirtoCommerce.TaxModule.Web
 
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
+                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<TaxDbContext>();
-                dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
-                dbContext.Database.EnsureCreated();
+                if (databaseProvider == "SqlServer")
+                {
+                    dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
+                }
                 dbContext.Database.Migrate();
             }
         }
