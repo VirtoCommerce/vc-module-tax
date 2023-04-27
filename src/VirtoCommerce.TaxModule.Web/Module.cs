@@ -68,9 +68,13 @@ namespace VirtoCommerce.TaxModule.Web
 
             PolymorphJsonConverter.RegisterTypeForDiscriminator(typeof(TaxProvider), nameof(TaxProvider.TypeName));
 
-            var taxProviderRegistrar = applicationBuilder.ApplicationServices.GetRequiredService<ITaxProviderRegistrar>();
-            taxProviderRegistrar.RegisterTaxProvider<FixedRateTaxProvider>();
-            settingsRegistrar.RegisterSettingsForType(Core.ModuleConstants.Settings.FixedTaxProviderSettings.AllSettings, typeof(FixedRateTaxProvider).Name);
+            var fixedRateTaxProviderEnabled = Configuration.GetValue<bool>("TaxModule:FixedRateTaxProvider:Enabled", true);
+            if (fixedRateTaxProviderEnabled)
+            {
+                var taxProviderRegistrar = applicationBuilder.ApplicationServices.GetRequiredService<ITaxProviderRegistrar>();
+                taxProviderRegistrar.RegisterTaxProvider<FixedRateTaxProvider>();
+                settingsRegistrar.RegisterSettingsForType(Core.ModuleConstants.Settings.FixedTaxProviderSettings.AllSettings, typeof(FixedRateTaxProvider).Name);
+            }
 
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
