@@ -4,8 +4,8 @@
   <version>3.204.0</version>
   <version-tag />
   <platformVersion>3.200.0</platformVersion>
-  <title>Tax</title>
-  <description>Provides a flexible way to evaluate taxes by using different tax providers and core abstractions for custom tax providers.</description>
+  <title>Tax Core</title>
+  <description>Defines Core Abstractions for taxe evaluation by using different tax providers and FixedRateTaxProvider.</description>
   <authors>
     <author>Virto Commerce</author>
   </authors>
