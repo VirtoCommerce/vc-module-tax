@@ -4,14 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Data.GenericCrud;
+using VirtoCommerce.TaxModule.Core.Events;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Services;
 using VirtoCommerce.TaxModule.Data.Model;
 using VirtoCommerce.TaxModule.Data.Repositories;
-using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Data.GenericCrud;
-using VirtoCommerce.TaxModule.Core.Events;
 
 namespace VirtoCommerce.TaxModule.Data.Services
 {
@@ -39,14 +39,22 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
         protected override TaxProvider ProcessModel(string responseGroup, StoreTaxProviderEntity entity, TaxProvider model)
         {
-            var taxProvider = AbstractTypeFactory<TaxProvider>.TryCreateInstance(string.IsNullOrEmpty(entity.TypeName) ? $"{entity.Code}TaxProvider" : entity.TypeName);
-            if (taxProvider != null)
+            try
             {
-                entity.ToModel(taxProvider);
+                var taxProvider = AbstractTypeFactory<TaxProvider>.TryCreateInstance(string.IsNullOrEmpty(entity.TypeName) ? $"{entity.Code}TaxProvider" : entity.TypeName);
+                if (taxProvider != null)
+                {
+                    entity.ToModel(taxProvider);
 
-                _settingManager.DeepLoadSettingsAsync(taxProvider).GetAwaiter().GetResult();
-                return taxProvider;
+                    _settingManager.DeepLoadSettingsAsync(taxProvider).GetAwaiter().GetResult();
+                    return taxProvider;
+                }
             }
+            catch (OperationCanceledException)
+            {
+                // Return null if provider is not registered more
+            }
+
             return null;
         }
 

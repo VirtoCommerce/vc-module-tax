@@ -1,17 +1,24 @@
 # Overview
 
-The Tax Module provides the ability to extend tax provider list with custom providers and also provides an interface and API for managing these tax providers.
+The Tax module provides a flexible way to evaluate taxes by using different tax providers and core abstractions for custom tax providers. It allows easy addition of custom rules for tax calculation.
 
-The tax module is an engine for tax calculations.
+The module includes FixedRateTaxProvider as a built-in tax provider.
+
+The module provides an API to work with the tax provider list and allows you to connect the tax providers to a selected store. The list of available tax providers can be viewed and edited on the UI.
+
 
 ## Key Features
 
-1. Extend the custom tax providers;
-1. Tax providers registration using the code;
-1. Display the list of available tax providers on UI;
-1. Edit tax provider settings on UI;
-1. Connect the tax providers to the selected Store;
-1. API to work with tax provider list.
+1. **Flexible tax calculation**: Evaluate tax using different tax providers, including the built-in FixedRateTaxProvider, and easily add custom rules for tax calculation.
+1. **UI integration**: Display the list of available tax providers on the user interface and edit their settings directly from the platform.
+1. **Store-level tax configuration**: Connect tax providers to specific stores and configure different tax rates based on location, product type, or other parameters.
+1. **Customizable tax providers**: Implement custom tax providers by creating new modules that inherit from the abstract TaxProviderBase class.
+1. **Programmatic tax provider registration**: Register new tax providers programmatically by implementing the ITaxProvider interface.
+1. **API access**: Access the list of available tax providers and their settings via the public API.
+
+## Default Providers
+1. FixedRateTaxProvider is a built-in tax provider included in the Virto Commerce Tax Module. It calculates taxes based on fixed rates.
+1. [Avalara.Tax](https://github.com/VirtoCommerce/vc-module-avatax)  real time integration with Avalara Tax automation. This module is officially certified by Avalara to be compatible with Avalara API.
 
 ## Scenarios
 
@@ -38,3 +45,18 @@ The tax module is an engine for tax calculations.
 1. Save the changes if any editing was made.
 
 ![Tax provider settings](media/screen-tax-provider-settings.png)
+
+## Settings
+
+You can disable FixedRateTaxProvider by using `TaxModule:FixedRateTaxProvider:Enabled` setting in appsettings.json.
+
+```json
+"TaxModule":
+{
+    "FixedRateTaxProvider":
+    {
+        "Enabled": true
+    }
+},
+...
+```
