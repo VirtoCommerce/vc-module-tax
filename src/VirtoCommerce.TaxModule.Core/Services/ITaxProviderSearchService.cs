@@ -1,16 +1,10 @@
-using System;
-using System.Threading.Tasks;
+using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Model.Search;
 
 namespace VirtoCommerce.TaxModule.Core.Services
 {
-    /// <summary>
-    /// This interface should implement <see cref="SearchService<TaxProvider>"/> without methods.
-    /// Methods left for compatibility and should be removed after upgrade to inheritance
-    /// </summary>
-    public interface ITaxProviderSearchService
+    public interface ITaxProviderSearchService : ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider>
     {
-        [Obsolete(@"Need to remove after inherit ITaxProviderSearchService from SearchService<TaxProvider>.")]
-        Task<TaxProviderSearchResult> SearchTaxProvidersAsync(TaxProviderSearchCriteria criteria);
     }
 }

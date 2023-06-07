@@ -1,30 +1,27 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
-using VirtoCommerce.Platform.Data.ExportImport;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Model.Search;
 using VirtoCommerce.TaxModule.Core.Services;
-using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.TaxModule.Data.ExportImport
 {
     public class TaxExportImport
     {
-        private readonly ICrudService<TaxProvider> _taxProviderService;
-        private readonly ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider> _taxProviderSearchService;
+        private readonly ITaxProviderService _taxProviderService;
+        private readonly ITaxProviderSearchService _taxProviderSearchService;
         private readonly JsonSerializer _jsonSerializer;
         private readonly int _batchSize = 50;
 
         public TaxExportImport(ITaxProviderService taxProviderService, ITaxProviderSearchService taxProviderSearchService, JsonSerializer jsonSerializer)
         {
-            _taxProviderService = (ICrudService<TaxProvider>)taxProviderService;
+            _taxProviderService = taxProviderService;
             _jsonSerializer = jsonSerializer;
-            _taxProviderSearchService = (ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider>)taxProviderSearchService;
+            _taxProviderSearchService = taxProviderSearchService;
         }
 
         public async Task DoExportAsync(Stream outStream, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -43,14 +40,14 @@ namespace VirtoCommerce.TaxModule.Data.ExportImport
                 progressCallback(progressInfo);
 
                 await writer.WritePropertyNameAsync("TaxProviders");
-                await writer.SerializeJsonArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) =>
+                await writer.SerializeArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) =>
                 {
                     var searchCriteria = AbstractTypeFactory<TaxProviderSearchCriteria>.TryCreateInstance();
                     searchCriteria.Take = take;
                     searchCriteria.Skip = skip;
                     searchCriteria.WithoutTransient = true;
 
-                    var searchResult = await _taxProviderSearchService.SearchAsync(searchCriteria);
+                    var searchResult = await _taxProviderSearchService.SearchNoCloneAsync(searchCriteria);
                     return (GenericSearchResult<TaxProvider>)searchResult;
                 }, (processedCount, totalCount) =>
                 {
@@ -72,15 +69,15 @@ namespace VirtoCommerce.TaxModule.Data.ExportImport
             using (var streamReader = new StreamReader(inputStream))
             using (var reader = new JsonTextReader(streamReader))
             {
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     if (reader.TokenType == JsonToken.PropertyName)
                     {
                         if (reader.Value.ToString() == "TaxProviders")
                         {
-                            await reader.DeserializeJsonArrayWithPagingAsync<TaxProvider>(_jsonSerializer, _batchSize, items => _taxProviderService.SaveChangesAsync(items.ToArray()), processedCount =>
+                            await reader.DeserializeArrayWithPagingAsync<TaxProvider>(_jsonSerializer, _batchSize, items => _taxProviderService.SaveChangesAsync(items), processedCount =>
                             {
-                                progressInfo.Description = $"{ processedCount } tax providers have been imported";
+                                progressInfo.Description = $"{processedCount} tax providers have been imported";
                                 progressCallback(progressInfo);
                             }, cancellationToken);
                         }

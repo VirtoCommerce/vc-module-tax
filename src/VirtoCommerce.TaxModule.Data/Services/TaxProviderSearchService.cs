@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.GenericCrud;
@@ -19,8 +20,13 @@ namespace VirtoCommerce.TaxModule.Data.Services
     {
         private readonly ISettingsManager _settingManager;
 
-        public TaxProviderSearchService(Func<ITaxRepository> repositoryFactory, IPlatformMemoryCache platformMemoryCache, ITaxProviderService taxProviderService, ISettingsManager settingManager)
-            : base(repositoryFactory, platformMemoryCache, (ICrudService<TaxProvider>)taxProviderService)
+        public TaxProviderSearchService(
+            Func<ITaxRepository> repositoryFactory,
+            IPlatformMemoryCache platformMemoryCache,
+            ITaxProviderService crudService,
+            IOptions<CrudOptions> crudOptions,
+            ISettingsManager settingManager)
+            : base(repositoryFactory, platformMemoryCache, crudService, crudOptions)
         {
             _settingManager = settingManager;
         }
@@ -31,52 +37,69 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
             if (criteria.Take > 0 && !criteria.WithoutTransient)
             {
-                var transientProvidersQuery = AbstractTypeFactory<TaxProvider>.AllTypeInfos.Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name))
-                                                                              .OfType<TaxProvider>().AsQueryable();
+                var transientProvidersQuery = AbstractTypeFactory<TaxProvider>.AllTypeInfos
+                    .Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name))
+                    .AsQueryable();
+
                 if (!string.IsNullOrEmpty(criteria.Keyword))
                 {
                     transientProvidersQuery = transientProvidersQuery.Where(x => x.Code.Contains(criteria.Keyword));
                 }
+
                 var allPersistentProvidersTypes = result.Results.Select(x => x.GetType()).Distinct();
                 transientProvidersQuery = transientProvidersQuery.Where(x => !allPersistentProvidersTypes.Contains(x.GetType()));
 
                 result.TotalCount += transientProvidersQuery.Count();
-                var transientProviders = transientProvidersQuery.Skip(criteria.Skip)
-                                                                .Take(criteria.Take)
-                                                                .ToList();
+
+                var transientProviders = transientProvidersQuery
+                    .Skip(criteria.Skip)
+                    .Take(criteria.Take)
+                    .ToList();
 
                 foreach (var transientProvider in transientProviders)
                 {
                     await _settingManager.DeepLoadSettingsAsync(transientProvider);
                 }
 
-                result.Results = result.Results.Concat(transientProviders).AsQueryable()
-                                               .OrderBySortInfos(sortInfos).ThenBy(x => x.Id).ToList();
+                result.Results = result.Results.Concat(transientProviders)
+                    .AsQueryable()
+                    .OrderBySortInfos(sortInfos)
+                    .ThenBy(x => x.Id)
+                    .ToList();
             }
+
             return result;
         }
 
         protected override IQueryable<StoreTaxProviderEntity> BuildQuery(IRepository repository, TaxProviderSearchCriteria criteria)
         {
             var query = ((ITaxRepository)repository).TaxProviders;
+
             if (!string.IsNullOrEmpty(criteria.Keyword))
             {
                 query = query.Where(x => x.Code.Contains(criteria.Keyword) || x.Id.Contains(criteria.Keyword));
             }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            // For backward compatibility
             if (!criteria.StoreId.IsNullOrEmpty())
             {
                 query = query.Where(x => x.StoreId == criteria.StoreId);
             }
+#pragma warning restore CS0618 // Type or member is obsolete
+
             if (!criteria.StoreIds.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
             }
+
             return query;
         }
 
         protected override IList<SortInfo> BuildSortExpression(TaxProviderSearchCriteria criteria)
         {
             var sortInfos = criteria.SortInfos;
+
             if (sortInfos.IsNullOrEmpty())
             {
                 sortInfos = new[]
@@ -87,12 +110,8 @@ namespace VirtoCommerce.TaxModule.Data.Services
                     }
                 };
             }
-            return sortInfos;
-        }
 
-        public Task<TaxProviderSearchResult> SearchTaxProvidersAsync(TaxProviderSearchCriteria criteria)
-        {
-            return SearchAsync(criteria);
+            return sortInfos;
         }
     }
 }
