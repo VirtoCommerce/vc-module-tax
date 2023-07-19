@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Model.Search;
 using VirtoCommerce.TaxModule.Core.Services;
@@ -12,21 +12,20 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
     [Route("api/taxes")]
     public class TaxModuleController : Controller
     {
-        private readonly ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider> _taxProviderSearchService;
-
-        private readonly ICrudService<TaxProvider> _taxProviderService;
+        private readonly ITaxProviderSearchService _taxProviderSearchService;
+        private readonly ITaxProviderService _taxProviderService;
 
         public TaxModuleController(ITaxProviderSearchService taxProviderSearchService, ITaxProviderService taxProviderService)
         {
-            _taxProviderSearchService = (ISearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider>)taxProviderSearchService;
-            _taxProviderService = (ICrudService<TaxProvider>)taxProviderService;
+            _taxProviderSearchService = taxProviderSearchService;
+            _taxProviderService = taxProviderService;
         }
 
         [HttpPost]
         [Route("search")]
         public async Task<ActionResult<TaxProviderSearchResult>> SearchTaxProviders([FromBody] TaxProviderSearchCriteria criteria)
         {
-            var result = await _taxProviderSearchService.SearchAsync(criteria);
+            var result = await _taxProviderSearchService.SearchNoCloneAsync(criteria);
             return Ok(result);
         }
 
@@ -34,7 +33,7 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
         [Route("{id}")]
         public async Task<ActionResult<TaxProviderSearchResult>> GetTaxProviderById(string id)
         {
-            var result = await _taxProviderService.GetByIdAsync(id, null);
+            var result = await _taxProviderService.GetNoCloneAsync(id);
             return Ok(result);
         }
 
@@ -57,7 +56,7 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
         public async Task<ActionResult<TaxRate[]>> EvaluateTaxes(string storeId, [FromBody] TaxEvaluationContext evalContext)
         {
             var result = new List<TaxRate>();
-            var storeTaxProviders = await _taxProviderSearchService.SearchAsync(new TaxProviderSearchCriteria { StoreIds = new[] { storeId } });
+            var storeTaxProviders = await _taxProviderSearchService.SearchNoCloneAsync(new TaxProviderSearchCriteria { StoreIds = new[] { storeId } });
             var activeTaxProvider = storeTaxProviders.Results.FirstOrDefault(x => x.IsActive);
             if (activeTaxProvider != null)
             {
