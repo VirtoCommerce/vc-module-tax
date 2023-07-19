@@ -25,7 +25,8 @@ namespace VirtoCommerce.TaxModule.Data.Services
             _settingManager = settingManager;
         }
 
-        public void RegisterTaxProvider<T>(Func<T> factory = null) where T : TaxProvider
+        public void RegisterTaxProvider<T>(Func<T> factory = null)
+            where T : TaxProvider
         {
             if (AbstractTypeFactory<TaxProvider>.AllTypeInfos.All(t => t.Type != typeof(T)))
             {
@@ -36,6 +37,7 @@ namespace VirtoCommerce.TaxModule.Data.Services
                 }
             }
         }
+
 
         protected override TaxProvider ProcessModel(string responseGroup, StoreTaxProviderEntity entity, TaxProvider model)
         {
@@ -58,35 +60,19 @@ namespace VirtoCommerce.TaxModule.Data.Services
             return null;
         }
 
-        protected override Task AfterSaveChangesAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
+        protected override Task AfterSaveChangesAsync(IList<TaxProvider> models, IList<GenericChangedEntry<TaxProvider>> changedEntries)
         {
             return _settingManager.DeepSaveSettingsAsync(models);
         }
 
-        protected override Task AfterDeleteAsync(IEnumerable<TaxProvider> models, IEnumerable<GenericChangedEntry<TaxProvider>> changedEntries)
+        protected override Task AfterDeleteAsync(IList<TaxProvider> models, IList<GenericChangedEntry<TaxProvider>> changedEntries)
         {
             return _settingManager.DeepRemoveSettingsAsync(models);
         }
 
-        protected override Task<IEnumerable<StoreTaxProviderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
+        protected override Task<IList<StoreTaxProviderEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
             return ((ITaxRepository)repository).GetByIdsAsync(ids);
-        }
-
-        public async Task<TaxProvider[]> GetByIdsAsync(string[] ids, string responseGroup)
-        {
-            var result = await base.GetByIdsAsync(ids);
-            return result.ToArray();
-        }
-
-        public Task SaveChangesAsync(TaxProvider[] taxProviders)
-        {
-            return base.SaveChangesAsync(taxProviders);
-        }
-
-        public Task DeleteAsync(string[] ids)
-        {
-            return base.DeleteAsync(ids);
         }
     }
 }

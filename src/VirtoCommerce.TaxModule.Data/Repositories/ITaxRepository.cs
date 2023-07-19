@@ -9,6 +9,6 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
     public interface ITaxRepository : IRepository
     {
         IQueryable<StoreTaxProviderEntity> TaxProviders { get; }
-        Task<IEnumerable<StoreTaxProviderEntity>> GetByIdsAsync(IEnumerable<string> ids);
+        Task<IList<StoreTaxProviderEntity>> GetByIdsAsync(IList<string> ids);
     }
 }

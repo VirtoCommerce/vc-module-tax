@@ -9,15 +9,18 @@ namespace VirtoCommerce.TaxModule.Data.Repositories
 {
     public class TaxRepository : DbContextRepositoryBase<TaxDbContext>, ITaxRepository
     {
-        public TaxRepository(TaxDbContext dbContext) : base(dbContext)
+        public TaxRepository(TaxDbContext dbContext)
+            : base(dbContext)
         {
         }
 
         public IQueryable<StoreTaxProviderEntity> TaxProviders => DbContext.Set<StoreTaxProviderEntity>();
 
-        public Task<IEnumerable<StoreTaxProviderEntity>> GetByIdsAsync(IEnumerable<string> ids)
+        public async Task<IList<StoreTaxProviderEntity>> GetByIdsAsync(IList<string> ids)
         {
-            return Task.FromResult<IEnumerable<StoreTaxProviderEntity>>(TaxProviders.Where(x => ids.Contains(x.Id)).ToList());
+            return await TaxProviders
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
         }
     }
 }
