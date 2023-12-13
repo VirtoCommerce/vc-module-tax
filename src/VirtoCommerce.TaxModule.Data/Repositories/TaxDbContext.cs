@@ -2,10 +2,11 @@ using System.Reflection;
 using EntityFrameworkCore.Triggers;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.TaxModule.Data.Model;
+using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.TaxModule.Data.Repositories
 {
-    public class TaxDbContext : DbContextWithTriggers
+    public class TaxDbContext : DbContextBase
     {
         public TaxDbContext(DbContextOptions<TaxDbContext> options) : base(options)
         {
