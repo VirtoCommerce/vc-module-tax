@@ -19,7 +19,7 @@ namespace VirtoCommerce.TaxModule.Data.Provider
         {
             get
             {
-                return Settings.GetSettingValue(ModuleConstants.Settings.FixedTaxProviderSettings.FixedTaxRateProviderRate.Name, 0m);
+                return Settings.GetValue<decimal>(ModuleConstants.Settings.FixedTaxProviderSettings.FixedTaxRateProviderRate);
             }
         }
 
@@ -28,7 +28,7 @@ namespace VirtoCommerce.TaxModule.Data.Provider
             var taxEvalContext = context as TaxEvaluationContext;
             if (taxEvalContext == null)
             {
-                throw new NullReferenceException(nameof(context));
+                throw new ArgumentNullException(nameof(context));
             }
 
             var retVal = new List<TaxRate>();
