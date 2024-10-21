@@ -1,61 +1,61 @@
 {
-  "tax": {
-    "blades": {
-      "tax-provider-detail": {
-        "subtitle": "Редактировать налогового провайдера",
-        "labels": {
-          "name": "Имя",
-          "code": "Код",
-          "is-active": "Действующий",
-          "is-active-description": "Активируйте, чтобы установить этого налогового провайдера для магазина",
-          "settings": "Настройки"
+    "tax": {
+        "blades": {
+            "tax-provider-detail": {
+                "subtitle": "Редактировать налогового провайдера",
+                "labels": {
+                    "name": "Имя",
+                    "code": "Код",
+                    "is-active": "Активен",
+                    "is-active-description": "Aктивируйте этого налогового провайдера для магазина",
+                    "settings": "Настройки"
+                },
+                "placeholders": {
+                    "description": "Добавьте описание"
+                }
+            },
+            "tax-provider-list": {
+                "subtitle": "",
+                "labels": {
+                    "is-active": "Активен",
+                    "tax-provider": "Налоговый провайдер",
+                    "no-tax-providers": "Нет зарегистрированных налоговых провайдеров",
+                    "note": "Измените порядок, в котором способы доставки отображаются в интернет-магазине. Перетаскивайте наименования для изменения порядка. Не забудьте включить расчет налога в настройках магазина!"
+                }
+            }
         },
-        "placeholders": {
-          "description": "Введите описание"
-        }
-      },
-      "tax-provider-list": {
-        "subtitle": "",
+        "dialogs": {
+            "tax-provider-save": {
+                "title": "Сохранить изменения",
+                "message": "Налоговый провайдер был изменен. Вы хотите сохранить изменения?"
+            }
+        },
+        "widgets": {
+            "storeTaxingWidget": {
+                "title": "Налоговые провайдеры",
+                "blade-subtitle": "Налоговые провайдеры"
+            }
+        },
         "labels": {
-          "is-active": "Действующий",
-          "tax-provider": "Налоговый провайдер",
-          "no-tax-providers": "Налоговые провайдеры не зарегистрированы",
-          "note": "Установите порядок отображения налоговых провайдеров в интернет-магазине. Перетащите, чтобы изменить порядок. Не забудьте включить расчет налога в настройках магазина!"
+            "FixedRateTaxProvider": {
+                "name": "Фиксированная процентная ставка налога",
+                "description": "Фиксированная процентная ставка налога"
+            }
         }
-      }
     },
-    "dialogs": {
-      "tax-provider-save": {
-        "title": "Сохранить изменения",
-        "message": "Налоговый провайдер был изменен. Вы хотите сохранить изменения?"
-      }
+    "settings": {
+        "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+            "title": "Фиксированная ставка налога %",
+            "description": "Фиксированная ставка налога"
+        },
+        "VirtoCommerce.Core.General.TaxTypes": {
+            "title": "Типы налогов",
+            "description": "Доступные типы налогов в системе"
+        }
     },
-    "widgets": {
-      "storeTaxingWidget": {
-        "title": "Налоговые провайдеры",
-        "blade-subtitle": "Налоговые провайдеры"
-      }
-    },
-    "labels": {
-      "FixedRateTaxProvider": {
-        "name": "Фиксированная ставка",
-        "description": "Фиксированный процент ставки"
-      }
+    "module": {
+        "VirtoCommerce.Tax": {
+            "description": "Экспорт/Импорт настроек налогового провайдера"
+        }
     }
-  },
-  "settings": {
-    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
-      "title": "Фиксированная ставка %",
-      "description": "Фиксированный процент ставки"
-    },
-    "VirtoCommerce.Core.General.TaxTypes": {
-      "title": "Виды налогов",
-      "description": "Виды налогов, имеющихся в системе"
-    }
-  },
-  "module": {
-    "VirtoCommerce.Tax": {
-      "description": "Экспорт/Импорт настроек налоговых провайдеров"
-    }
-  }
 }

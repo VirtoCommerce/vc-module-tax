@@ -1,0 +1,61 @@
+{
+    "tax": {
+        "blades": {
+            "tax-provider-detail": {
+                "subtitle": "编辑税务提供者",
+                "labels": {
+                    "name": "名称",
+                    "code": "代码",
+                    "is-active": "是否激活",
+                    "is-active-description": "设置以激活此税务提供者用于商店",
+                    "settings": "设置"
+                },
+                "placeholders": {
+                    "description": "输入描述"
+                }
+            },
+            "tax-provider-list": {
+                "subtitle": "",
+                "labels": {
+                    "is-active": "是否激活",
+                    "tax-provider": "税务提供者",
+                    "no-tax-providers": "没有注册的税务提供者",
+                    "note": "安排税务提供者在网上商店中显示的顺序。使用拖放功能重新排序。不要忘记在商店设置中启用税计算！"
+                }
+            }
+        },
+        "dialogs": {
+            "tax-provider-save": {
+                "title": "保存更改",
+                "message": "税务提供者已被修改。您想保存更改吗？"
+            }
+        },
+        "widgets": {
+            "storeTaxingWidget": {
+                "title": "税务提供者",
+                "blade-subtitle": "税务提供者"
+            }
+        },
+        "labels": {
+            "FixedRateTaxProvider": {
+                "name": "固定百分比税率",
+                "description": "固定百分比税率"
+            }
+        }
+    },
+    "settings": {
+        "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+            "title": "固定税率 %",
+            "description": "固定税率"
+        },
+        "VirtoCommerce.Core.General.TaxTypes": {
+            "title": "税种",
+            "description": "系统中可用的税种"
+        }
+    },
+    "module": {
+        "VirtoCommerce.Tax": {
+            "description": "导出/导入税务提供者设置"
+        }
+    }
+}
