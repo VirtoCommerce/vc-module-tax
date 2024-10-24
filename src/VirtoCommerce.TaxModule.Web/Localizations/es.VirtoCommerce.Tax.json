@@ -1,0 +1,61 @@
+{
+    "tax": {
+        "blades": {
+            "tax-provider-detail": {
+                "subtitle": "Editar proveedor de impuestos",
+                "labels": {
+                    "name": "Nombre",
+                    "code": "Código",
+                    "is-active": "Está activo",
+                    "is-active-description": "Establecer para activar este proveedor de impuestos para la tienda",
+                    "settings": "Configuraciones"
+                },
+                "placeholders": {
+                    "description": "Ingrese la descripción"
+                }
+            },
+            "tax-provider-list": {
+                "subtitle": "",
+                "labels": {
+                    "is-active": "Está activo",
+                    "tax-provider": "Proveedor de impuestos",
+                    "no-tax-providers": "No hay proveedores de impuestos registrados",
+                    "note": "Organice el orden en que se muestran los proveedores de impuestos en la tienda en línea. Use arrastrar y soltar para reordenarlos. ¡No olvide habilitar el cálculo de impuestos en la configuración de la tienda!"
+                }
+            }
+        },
+        "dialogs": {
+            "tax-provider-save": {
+                "title": "Guardar cambios",
+                "message": "El proveedor de impuestos ha sido modificado. ¿Desea guardar los cambios?"
+            }
+        },
+        "widgets": {
+            "storeTaxingWidget": {
+                "title": "Proveedores de impuestos",
+                "blade-subtitle": "Proveedores de impuestos"
+            }
+        },
+        "labels": {
+            "FixedRateTaxProvider": {
+                "name": "Tasa de impuesto fija en porcentaje",
+                "description": "Tasa de impuesto fija en porcentaje"
+            }
+        }
+    },
+    "settings": {
+        "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+            "title": "Tasa de impuesto fija %",
+            "description": "Tasa de impuesto fija"
+        },
+        "VirtoCommerce.Core.General.TaxTypes": {
+            "title": "Tipos de impuestos",
+            "description": "Tipos de impuestos disponibles en el sistema"
+        }
+    },
+    "module": {
+        "VirtoCommerce.Tax": {
+            "description": "Exportar/Importar configuraciones del proveedor de impuestos"
+        }
+    }
+}

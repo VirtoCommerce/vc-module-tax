@@ -1,0 +1,61 @@
+{
+    "tax": {
+        "blades": {
+            "tax-provider-detail": {
+                "subtitle": "税務プロバイダーを編集",
+                "labels": {
+                    "name": "名前",
+                    "code": "コード",
+                    "is-active": "アクティブ",
+                    "is-active-description": "この税務プロバイダーを店舗用にアクティブにするには設定してください",
+                    "settings": "設定"
+                },
+                "placeholders": {
+                    "description": "説明を入力"
+                }
+            },
+            "tax-provider-list": {
+                "subtitle": "",
+                "labels": {
+                    "is-active": "アクティブ",
+                    "tax-provider": "税務プロバイダー",
+                    "no-tax-providers": "登録された税務プロバイダーはありません",
+                    "note": "オンラインストアに表示される税務プロバイダーの順序を整理します。ドラッグアンドドロップを使用して順序を変更してください。店舗設定で税計算を有効にするのを忘れないでください！"
+                }
+            }
+        },
+        "dialogs": {
+            "tax-provider-save": {
+                "title": "変更を保存",
+                "message": "税務プロバイダーが変更されました。変更を保存しますか？"
+            }
+        },
+        "widgets": {
+            "storeTaxingWidget": {
+                "title": "税務プロバイダー",
+                "blade-subtitle": "税務プロバイダー"
+            }
+        },
+        "labels": {
+            "FixedRateTaxProvider": {
+                "name": "固定パーセント税率",
+                "description": "固定パーセント税率"
+            }
+        }
+    },
+    "settings": {
+        "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+            "title": "固定税率 %",
+            "description": "固定税率"
+        },
+        "VirtoCommerce.Core.General.TaxTypes": {
+            "title": "税の種類",
+            "description": "システムで利用可能な税の種類"
+        }
+    },
+    "module": {
+        "VirtoCommerce.Tax": {
+            "description": "税務プロバイダー設定のエクスポート/インポート"
+        }
+    }
+}

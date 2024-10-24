@@ -1,0 +1,61 @@
+{
+    "tax": {
+        "blades": {
+            "tax-provider-detail": {
+                "subtitle": "Edytuj dostawcę podatków",
+                "labels": {
+                    "name": "Nazwa",
+                    "code": "Kod",
+                    "is-active": "Jest aktywny",
+                    "is-active-description": "Ustaw, aby aktywować tego dostawcę podatków dla sklepu",
+                    "settings": "Ustawienia"
+                },
+                "placeholders": {
+                    "description": "Wprowadź opis"
+                }
+            },
+            "tax-provider-list": {
+                "subtitle": "",
+                "labels": {
+                    "is-active": "Jest aktywny",
+                    "tax-provider": "Dostawca podatków",
+                    "no-tax-providers": "Nie ma zarejestrowanych dostawców podatków",
+                    "note": "Ułóż kolejność, w jakiej dostawcy podatków są wyświetlane w sklepie internetowym. Użyj przeciągania i upuszczania, aby je uporządkować. Nie zapomnij włączyć obliczania podatków w ustawieniach sklepu!"
+                }
+            }
+        },
+        "dialogs": {
+            "tax-provider-save": {
+                "title": "Zapisz zmiany",
+                "message": "Dostawca podatków został zmodyfikowany. Czy chcesz zapisać zmiany?"
+            }
+        },
+        "widgets": {
+            "storeTaxingWidget": {
+                "title": "Dostawcy podatków",
+                "blade-subtitle": "Dostawcy podatków"
+            }
+        },
+        "labels": {
+            "FixedRateTaxProvider": {
+                "name": "Stała stawka podatku w procentach",
+                "description": "Stała stawka podatku w procentach"
+            }
+        }
+    },
+    "settings": {
+        "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+            "title": "Stała stawka podatku %",
+            "description": "Stała stawka podatku"
+        },
+        "VirtoCommerce.Core.General.TaxTypes": {
+            "title": "Rodzaje podatków",
+            "description": "Rodzaje podatków dostępne w systemie"
+        }
+    },
+    "module": {
+        "VirtoCommerce.Tax": {
+            "description": "Eksportuj/Importuj ustawienia dostawcy podatków"
+        }
+    }
+}
