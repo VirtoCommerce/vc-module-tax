@@ -1,0 +1,61 @@
+{
+    "tax": {
+        "blades": {
+            "tax-provider-detail": {
+                "subtitle": "Steueranbieter bearbeiten",
+                "labels": {
+                    "name": "Name",
+                    "code": "Code",
+                    "is-active": "Ist aktiv",
+                    "is-active-description": "Aktivieren Sie diesen Steueranbieter für den Shop",
+                    "settings": "Einstellungen"
+                },
+                "placeholders": {
+                    "description": "Beschreibung eingeben"
+                }
+            },
+            "tax-provider-list": {
+                "subtitle": "",
+                "labels": {
+                    "is-active": "Ist aktiv",
+                    "tax-provider": "Steueranbieter",
+                    "no-tax-providers": "Keine Steueranbieter registriert",
+                    "note": "Ordnen Sie die Reihenfolge an, in der die Steueranbieter im Webshop angezeigt werden. Verwenden Sie Drag & Drop, um sie neu anzuordnen. Vergessen Sie nicht, die Steuerberechnung in den Shop-Einstellungen zu aktivieren!"
+                }
+            }
+        },
+        "dialogs": {
+            "tax-provider-save": {
+                "title": "Änderungen speichern",
+                "message": "Der Steueranbieter wurde geändert. Möchten Sie die Änderungen speichern?"
+            }
+        },
+        "widgets": {
+            "storeTaxingWidget": {
+                "title": "Steueranbieter",
+                "blade-subtitle": "Steueranbieter"
+            }
+        },
+        "labels": {
+            "FixedRateTaxProvider": {
+                "name": "Fester Prozentsatz Steuersatz",
+                "description": "Fester Prozentsatz Steuersatz"
+            }
+        }
+    },
+    "settings": {
+        "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+            "title": "Fester Steuersatz %",
+            "description": "Fester Steuersatz"
+        },
+        "VirtoCommerce.Core.General.TaxTypes": {
+            "title": "Steuerarten",
+            "description": "Verfügbare Steuerarten im System"
+        }
+    },
+    "module": {
+        "VirtoCommerce.Tax": {
+            "description": "Exportieren/Importieren von Einstellungen für Steueranbieter"
+        }
+    }
+}

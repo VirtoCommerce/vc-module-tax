@@ -20,14 +20,14 @@
                     "is-active": "Is active",
                     "tax-provider": "Tax provider",
                     "no-tax-providers": "No tax providers are registered",
-                    "note": "Set the order how tax providers appear sorted in web store. Drag and drop to change the order. Don't forget to enable tax calculation in the store settings!"
+                    "note": "Arrange the order in which tax providers are displayed in the web store. Use drag and drop to reorder them. Don't forget to enable tax calculation in the store settings!"
                 }
             }
         },
         "dialogs": {
             "tax-provider-save": {
                 "title": "Save changes",
-                "message": "The Tax provider has been modified. Do you want to save changes?"
+                "message": "The tax provider has been modified. Do you want to save changes?"
             }
         },
         "widgets": {
