@@ -1,0 +1,61 @@
+{
+  "tax": {
+    "blades": {
+      "tax-provider-detail": {
+        "subtitle": "Redigera skatteleverantör",
+        "labels": {
+          "name": "Namn",
+          "code": "Kod",
+          "is-active": "Är aktiv",
+          "is-active-description": "Aktivera denna skatteleverantör för butiken",
+          "settings": "Inställningar"
+        },
+        "placeholders": {
+          "description": "Ange beskrivning"
+        }
+      },
+      "tax-provider-list": {
+        "subtitle": "",
+        "labels": {
+          "is-active": "Är aktiv",
+          "tax-provider": "Skatteleverantör",
+          "no-tax-providers": "Inga skatteleverantörer är registrerade",
+          "note": "Ordna i vilken ordning skatteleverantörerna visas i webbutiken. Använd dra-och-släpp för att ändra ordning. Glöm inte att aktivera skatteberäkning i butikens inställningar!"
+        }
+      }
+    },
+    "dialogs": {
+      "tax-provider-save": {
+        "title": "Spara ändringar",
+        "message": "Skatteleverantören har ändrats. Vill du spara ändringarna?"
+      }
+    },
+    "widgets": {
+      "storeTaxingWidget": {
+        "title": "Skatteleverantörer",
+        "blade-subtitle": "Skatteleverantörer"
+      }
+    },
+    "labels": {
+      "FixedRateTaxProvider": {
+        "name": "Fast procentsats för skatt",
+        "description": "Fast procentsats för skatt"
+      }
+    }
+  },
+  "settings": {
+    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+      "title": "Fast skattesats %",
+      "description": "Fast skattesats"
+    },
+    "VirtoCommerce.Core.General.TaxTypes": {
+      "title": "Skattetyper",
+      "description": "Skattetyper som finns i systemet"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Tax": {
+      "description": "Exportera/importera inställningar för skatteleverantör"
+    }
+  }
+}

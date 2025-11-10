@@ -1,0 +1,61 @@
+{
+  "tax": {
+    "blades": {
+      "tax-provider-detail": {
+        "subtitle": "Rediger skatteleverandør",
+        "labels": {
+          "name": "Navn",
+          "code": "Kode",
+          "is-active": "Er aktiv",
+          "is-active-description": "Aktiver denne skatteleverandøren for butikken",
+          "settings": "Innstillinger"
+        },
+        "placeholders": {
+          "description": "Skriv inn beskrivelse"
+        }
+      },
+      "tax-provider-list": {
+        "subtitle": "",
+        "labels": {
+          "is-active": "Er aktiv",
+          "tax-provider": "Skatteleverandør",
+          "no-tax-providers": "Ingen skatteleverandører er registrert",
+          "note": "Sorter rekkefølgen skatteleverandørene vises i nettbutikken. Bruk dra-og-slipp for å endre rekkefølge. Husk å aktivere skatteberegning i butikkinnstillingene!"
+        }
+      }
+    },
+    "dialogs": {
+      "tax-provider-save": {
+        "title": "Lagre endringer",
+        "message": "Skatteleverandøren er endret. Vil du lagre endringene?"
+      }
+    },
+    "widgets": {
+      "storeTaxingWidget": {
+        "title": "Skatteleverandører",
+        "blade-subtitle": "Skatteleverandører"
+      }
+    },
+    "labels": {
+      "FixedRateTaxProvider": {
+        "name": "Fast prosentsats for skatt",
+        "description": "Fast prosentsats for skatt"
+      }
+    }
+  },
+  "settings": {
+    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+      "title": "Fast skattesats %",
+      "description": "Fast skattesats"
+    },
+    "VirtoCommerce.Core.General.TaxTypes": {
+      "title": "Skattetyper",
+      "description": "Skattetyper tilgjengelige i systemet"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Tax": {
+      "description": "Eksporter/importer innstillinger for skatteleverandør"
+    }
+  }
+}
