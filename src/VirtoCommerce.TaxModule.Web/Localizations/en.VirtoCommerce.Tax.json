@@ -55,7 +55,7 @@
     },
     "module": {
         "VirtoCommerce.Tax": {
-            "description": "Export/Import tax provider settings"
+            "description": "Export/import tax provider settings"
         }
     }
 }
