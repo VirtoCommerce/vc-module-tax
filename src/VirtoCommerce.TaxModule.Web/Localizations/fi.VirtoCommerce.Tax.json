@@ -1,0 +1,61 @@
+{
+  "tax": {
+    "blades": {
+      "tax-provider-detail": {
+        "subtitle": "Muokkaa verotoimittajaa",
+        "labels": {
+          "name": "Nimi",
+          "code": "Koodi",
+          "is-active": "Aktiivinen",
+          "is-active-description": "Ota tämä verotoimittaja käyttöön kaupassa",
+          "settings": "Asetukset"
+        },
+        "placeholders": {
+          "description": "Anna kuvaus"
+        }
+      },
+      "tax-provider-list": {
+        "subtitle": "",
+        "labels": {
+          "is-active": "Aktiivinen",
+          "tax-provider": "Verotoimittaja",
+          "no-tax-providers": "Ei rekisteröityjä verotoimittajia",
+          "note": "Järjestä verotoimittajien näyttöjärjestys verkkokaupassa. Käytä raahausta järjestääksesi ne uudelleen. Muista ottaa verolaskenta käyttöön kaupan asetuksissa!"
+        }
+      }
+    },
+    "dialogs": {
+      "tax-provider-save": {
+        "title": "Tallenna muutokset",
+        "message": "Verotoimittajaa on muokattu. Haluatko tallentaa muutokset?"
+      }
+    },
+    "widgets": {
+      "storeTaxingWidget": {
+        "title": "Verotoimittajat",
+        "blade-subtitle": "Verotoimittajat"
+      }
+    },
+    "labels": {
+      "FixedRateTaxProvider": {
+        "name": "Kiinteä prosenttiverokanta",
+        "description": "Kiinteä prosenttiverokanta"
+      }
+    }
+  },
+  "settings": {
+    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+      "title": "Kiinteä veroprosentti %",
+      "description": "Kiinteä veroprosentti"
+    },
+    "VirtoCommerce.Core.General.TaxTypes": {
+      "title": "Verotyypit",
+      "description": "Järjestelmässä käytettävissä olevat verotyypit"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Tax": {
+      "description": "Vie/tuo verotoimittajan asetukset"
+    }
+  }
+}
