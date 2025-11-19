@@ -3,10 +3,10 @@
   <id>VirtoCommerce.Tax</id>
   <version>3.807.0</version>
   <version-tag />
-  <platformVersion>3.853.0</platformVersion>
+  <platformVersion>3.916.0-alpha.13164-vcst-4203-cleanup</platformVersion>
   <dependencies>
-    <dependency id="VirtoCommerce.Core" version="3.808.0" />
-    <dependency id="VirtoCommerce.Store" version="3.809.0" />
+    <dependency id="VirtoCommerce.Core" version="3.823.0-alpha.1666-vcst-4203-cleanup" />
+    <dependency id="VirtoCommerce.Store" version="3.823.0-alpha.763-vcst-4203-cleanup" />
   </dependencies>
   <title>Tax Core</title>
   <description>Defines Core Abstractions for taxes evaluation by using different tax providers and FixedRateTaxProvider.</description>
@@ -20,7 +20,7 @@
   <iconUrl>Modules/$(VirtoCommerce.Tax)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <releaseNotes />
-  <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2025 Virto Commerce. All rights reserved</copyright>
   <tags>stores</tags>
   <assemblyFile>VirtoCommerce.TaxModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.TaxModule.Web.Module, VirtoCommerce.TaxModule.Web</moduleType>
