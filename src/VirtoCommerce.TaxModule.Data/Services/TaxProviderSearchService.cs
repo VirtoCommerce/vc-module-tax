@@ -80,14 +80,6 @@ namespace VirtoCommerce.TaxModule.Data.Services
                 query = query.Where(x => x.Code.Contains(criteria.Keyword) || x.Id.Contains(criteria.Keyword));
             }
 
-#pragma warning disable CS0618 // Type or member is obsolete
-            // For backward compatibility
-            if (!criteria.StoreId.IsNullOrEmpty())
-            {
-                query = query.Where(x => x.StoreId == criteria.StoreId);
-            }
-#pragma warning restore CS0618 // Type or member is obsolete
-
             if (!criteria.StoreIds.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
