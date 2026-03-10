@@ -11,6 +11,9 @@ using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Extensions;
+using VirtoCommerce.Platform.Data.MySql.Extensions;
+using VirtoCommerce.Platform.Data.PostgreSql.Extensions;
+using VirtoCommerce.Platform.Data.SqlServer.Extensions;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Services;
 using VirtoCommerce.TaxModule.Data.ExportImport;
@@ -39,13 +42,13 @@ namespace VirtoCommerce.TaxModule.Web
                 switch (databaseProvider)
                 {
                     case "MySql":
-                        options.UseMySqlDatabase(connectionString);
+                        options.UseMySqlDatabase(connectionString, typeof(MySqlDataAssemblyMarker), Configuration);
                         break;
                     case "PostgreSql":
-                        options.UsePostgreSqlDatabase(connectionString);
+                        options.UsePostgreSqlDatabase(connectionString, typeof(PostgreSqlDataAssemblyMarker), Configuration);
                         break;
                     default:
-                        options.UseSqlServerDatabase(connectionString);
+                        options.UseSqlServerDatabase(connectionString, typeof(SqlServerDataAssemblyMarker), Configuration);
                         break;
                 }
             });
