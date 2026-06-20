@@ -3,7 +3,7 @@ angular.module('virtoCommerce.taxModule').controller('virtoCommerce.taxModule.ta
 
     blade.refresh = function() {
         blade.isLoading = true;
-        taxProviders.search({ storeId: blade.storeId },
+        taxProviders.search({ storeIds: [blade.storeId] },
             function(data) {
                 blade.isLoading = false;
                 blade.currentEntities = data.results;
