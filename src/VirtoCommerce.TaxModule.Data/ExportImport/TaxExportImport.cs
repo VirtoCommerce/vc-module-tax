@@ -1,4 +1,5 @@
-using System;
+using System;
+
 using System.Threading;
 using System.IO;
 using System.Threading.Tasks;
@@ -35,12 +36,12 @@ namespace VirtoCommerce.TaxModule.Data.ExportImport
             using (var sw = new StreamWriter(outStream))
             using (var writer = new JsonTextWriter(sw))
             {
-                await writer.WriteStartObjectAsync();
+                await writer.WriteStartObjectAsync(cancellationToken);
 
                 progressInfo.Description = "Tax providers are started to export";
                 progressCallback(progressInfo);
 
-                await writer.WritePropertyNameAsync("TaxProviders");
+                await writer.WritePropertyNameAsync("TaxProviders", cancellationToken);
                 await writer.SerializeArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) =>
                 {
                     var searchCriteria = AbstractTypeFactory<TaxProviderSearchCriteria>.TryCreateInstance();
@@ -56,8 +57,8 @@ namespace VirtoCommerce.TaxModule.Data.ExportImport
                     progressCallback(progressInfo);
                 }, cancellationToken);
 
-                await writer.WriteEndObjectAsync();
-                await writer.FlushAsync();
+                await writer.WriteEndObjectAsync(cancellationToken);
+                await writer.FlushAsync(cancellationToken);
             }
         }
 
@@ -70,7 +71,7 @@ namespace VirtoCommerce.TaxModule.Data.ExportImport
             using (var streamReader = new StreamReader(inputStream))
             using (var reader = new JsonTextReader(streamReader))
             {
-                while (await reader.ReadAsync())
+                while (await reader.ReadAsync(cancellationToken))
                 {
                     if (reader.TokenType == JsonToken.PropertyName)
                     {
