@@ -37,35 +37,43 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
             if (criteria.Take > 0 && !criteria.WithoutTransient)
             {
-                var transientProvidersQuery = AbstractTypeFactory<TaxProvider>.AllTypeInfos
-                    .Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name))
-                    .AsQueryable();
+                // Plain LINQ-to-objects: composing operators on an in-memory IQueryable
+                // (EnumerableQuery) rebuilds and compiles an expression tree on every
+                // enumeration; this method runs on every cart/product read, and the per-call
+                // compilation convoys on runtime-wide locks under concurrent requests.
+                var transientProviders = AbstractTypeFactory<TaxProvider>.AllTypeInfos
+                    .Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name));
 
                 if (!string.IsNullOrEmpty(criteria.Keyword))
                 {
-                    transientProvidersQuery = transientProvidersQuery.Where(x => x.Code.Contains(criteria.Keyword));
+                    transientProviders = transientProviders.Where(x => x.Code.Contains(criteria.Keyword));
                 }
 
-                var allPersistentProvidersTypes = result.Results.Select(x => x.GetType()).Distinct();
-                transientProvidersQuery = transientProvidersQuery.Where(x => !allPersistentProvidersTypes.Contains(x.GetType()));
+                var persistentProviderTypes = result.Results.Select(x => x.GetType()).ToHashSet();
+                var filteredTransientProviders = transientProviders
+                    .Where(x => !persistentProviderTypes.Contains(x.GetType()))
+                    .ToList();
 
-                result.TotalCount += transientProvidersQuery.Count();
+                result.TotalCount += filteredTransientProviders.Count;
 
-                var transientProviders = transientProvidersQuery
+                var pagedTransientProviders = filteredTransientProviders
                     .Skip(criteria.Skip)
                     .Take(criteria.Take)
                     .ToList();
 
-                foreach (var transientProvider in transientProviders)
+                foreach (var transientProvider in pagedTransientProviders)
                 {
                     await _settingManager.DeepLoadSettingsAsync(transientProvider);
                 }
 
-                result.Results = result.Results.Concat(transientProviders)
-                    .AsQueryable()
-                    .OrderBySortInfos(sortInfos)
-                    .ThenBy(x => x.Id)
-                    .ToList();
+                var allProviders = result.Results.Concat(pagedTransientProviders);
+
+                // The default sort (no explicit criteria.Sort) is a single ascending Code column —
+                // order it without the expression-based IQueryable path; arbitrary sort columns
+                // only occur on cold (admin) requests and keep the generic path.
+                result.Results = criteria.SortInfos.IsNullOrEmpty()
+                    ? allProviders.OrderBy(x => x.Code).ThenBy(x => x.Id).ToList()
+                    : allProviders.AsQueryable().OrderBySortInfos(sortInfos).ThenBy(x => x.Id).ToList();
             }
 
             return result;
