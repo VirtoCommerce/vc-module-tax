@@ -171,6 +171,19 @@ namespace VirtoCommerce.TaxModule.Data.Tests.Services
             Assert.Equal(4, result.TotalCount);
         }
 
+        [Fact]
+        public async Task ProcessSearchResult_WithSkipAndTake_PagesResultsButKeepsFullTotalCount()
+        {
+            var service = CreateService();
+            var result = new TaxProviderSearchResult();
+            var criteria = new TaxProviderSearchCriteria { Skip = 1, Take = 1 };
+
+            await service.RunProcessSearchResultAsync(result, criteria);
+
+            Assert.Single(result.Results);
+            Assert.Equal(3, result.TotalCount);
+        }
+
         private static TestableTaxProviderSearchService CreateService()
         {
             var settingsManager = new Mock<ISettingsManager>();
