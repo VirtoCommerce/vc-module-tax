@@ -37,10 +37,9 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
             if (criteria.Take > 0 && !criteria.WithoutTransient)
             {
-                // Plain LINQ-to-objects: composing operators on an in-memory IQueryable
-                // (EnumerableQuery) rebuilds and compiles an expression tree on every
-                // enumeration; this method runs on every cart/product read, and the per-call
-                // compilation convoys on runtime-wide locks under concurrent requests.
+                // Filter as IEnumerable, not by composing Where on an in-memory IQueryable:
+                // EnumerableQuery compiles the composed expression tree on every enumeration, and
+                // that compile path convoys on runtime-wide locks under concurrent cart/product reads.
                 var transientProviders = AbstractTypeFactory<TaxProvider>.AllTypeInfos
                     .Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name));
 
