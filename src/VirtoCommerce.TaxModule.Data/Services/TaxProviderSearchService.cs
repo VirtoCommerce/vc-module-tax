@@ -37,9 +37,7 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
             if (criteria.Take > 0 && !criteria.WithoutTransient)
             {
-                // Filter as IEnumerable, not by composing Where on an in-memory IQueryable:
-                // EnumerableQuery compiles the composed expression tree on every enumeration, and
-                // that compile path convoys on runtime-wide locks under concurrent cart/product reads.
+                // Not .AsQueryable().Where(...): that recompiles the expression tree per enumeration, a lock convoy under load.
                 var transientProviders = AbstractTypeFactory<TaxProvider>.AllTypeInfos
                     .Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name));
 
@@ -67,9 +65,7 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
                 var allProviders = result.Results.Concat(pagedTransientProviders);
 
-                // The default sort (no explicit criteria.Sort) is a single ascending Code column —
-                // order it without the expression-based IQueryable path; arbitrary sort columns
-                // only occur on cold (admin) requests and keep the generic path.
+                // Hot default Code sort avoids OrderBySortInfos' per-call expression compile; admin sorts (cold) keep the generic path.
                 result.Results = criteria.SortInfos.IsNullOrEmpty()
                     ? allProviders.OrderBy(x => x.Code).ThenBy(x => x.Id).ToList()
                     : allProviders.AsQueryable().OrderBySortInfos(sortInfos).ThenBy(x => x.Id).ToList();
