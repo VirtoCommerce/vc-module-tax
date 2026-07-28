@@ -18,6 +18,8 @@ namespace VirtoCommerce.TaxModule.Data.Services
 {
     public class TaxProviderSearchService : SearchService<TaxProviderSearchCriteria, TaxProviderSearchResult, TaxProvider, StoreTaxProviderEntity>, ITaxProviderSearchService
     {
+        protected const string DefaultSortColumn = nameof(StoreTaxProviderEntity.Code);
+
         private readonly ISettingsManager _settingManager;
 
         public TaxProviderSearchService(
@@ -65,8 +67,10 @@ namespace VirtoCommerce.TaxModule.Data.Services
 
                 var allProviders = result.Results.Concat(pagedTransientProviders);
 
-                // Hot default Code sort avoids OrderBySortInfos' per-call expression compile; admin sorts (cold) keep the generic path.
-                result.Results = criteria.SortInfos.IsNullOrEmpty()
+                // Arbitrary sort columns (admin, cold) are worth OrderBySortInfos' compile; the default
+                // order is not. Decided from what BuildSortExpression returned, so overriding that seam
+                // still changes the sort.
+                result.Results = IsSingleAscendingDefaultSort(sortInfos)
                     ? allProviders.OrderBy(x => x.Code).ThenBy(x => x.Id).ToList()
                     : allProviders.AsQueryable().OrderBySortInfos(sortInfos).ThenBy(x => x.Id).ToList();
             }
@@ -101,12 +105,19 @@ namespace VirtoCommerce.TaxModule.Data.Services
                 {
                     new SortInfo
                     {
-                        SortColumn = nameof(StoreTaxProviderEntity.Code)
+                        SortColumn = DefaultSortColumn
                     }
                 };
             }
 
             return sortInfos;
+        }
+
+        protected static bool IsSingleAscendingDefaultSort(IList<SortInfo> sortInfos)
+        {
+            return sortInfos?.Count == 1
+                && sortInfos[0].SortDirection == SortDirection.Ascending
+                && DefaultSortColumn.EqualsIgnoreCase(sortInfos[0].SortColumn);
         }
     }
 }

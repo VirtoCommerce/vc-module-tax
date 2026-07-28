@@ -140,6 +140,22 @@ namespace VirtoCommerce.TaxModule.Data.Tests.Services
         }
 
         [Fact]
+        public async Task ProcessSearchResult_ExplicitAscendingCodeSort_MatchesDefaultSort()
+        {
+            // The one case the sort fast path took over from the generic OrderBySortInfos path: an
+            // explicitly requested ascending Code sort. Asserted on the resulting order rather than on
+            // which branch ran, so the guard survives a future change of that boundary.
+            var service = CreateService();
+            var result = new TaxProviderSearchResult();
+            var criteria = new TaxProviderSearchCriteria { Take = 20, Sort = "Code" };
+
+            await service.RunProcessSearchResultAsync(result, criteria);
+
+            var codes = result.Results.Select(x => x.Code).ToList();
+            Assert.Equal(new[] { "aaa", "bbb", "ccc" }, codes);
+        }
+
+        [Fact]
         public async Task ProcessSearchResult_WithoutTransient_LeavesResultUntouched()
         {
             var service = CreateService();
