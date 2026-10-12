@@ -12,9 +12,10 @@ namespace VirtoCommerce.TaxModule.Core
         {
             public static class Permissions
             {
-                // Tax providers are configured as part of a store, so the Store module permissions apply
-                public const string Read = "store:read";
-                public const string Update = "store:update";
+                public const string Read = "tax:read";
+                public const string Update = "tax:update";
+
+                public static string[] AllPermissions { get; } = [Read, Update];
             }
         }
 

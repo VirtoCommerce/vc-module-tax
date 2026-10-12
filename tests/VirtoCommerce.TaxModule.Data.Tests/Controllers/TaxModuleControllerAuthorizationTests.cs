@@ -30,6 +30,12 @@ namespace VirtoCommerce.TaxModule.Data.Tests.Controllers
         }
 
         [Fact]
+        public void Module_Registers_Tax_Permissions()
+        {
+            Assert.Equal(["tax:read", "tax:update"], ModuleConstants.Security.Permissions.AllPermissions);
+        }
+
+        [Fact]
         public void Every_Action_Requires_A_Permission()
         {
             var actions = typeof(TaxModuleController).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
