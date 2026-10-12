@@ -8,6 +8,16 @@ namespace VirtoCommerce.TaxModule.Core
     [ExcludeFromCodeCoverage]
     public class ModuleConstants
     {
+        public static class Security
+        {
+            public static class Permissions
+            {
+                // Tax providers are configured as part of a store, so the Store module permissions apply
+                public const string Read = "store:read";
+                public const string Update = "store:update";
+            }
+        }
+
         public static class Settings
         {
             public static class General
