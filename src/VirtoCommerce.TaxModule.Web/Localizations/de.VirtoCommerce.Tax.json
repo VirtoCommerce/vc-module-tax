@@ -57,5 +57,9 @@
         "VirtoCommerce.Tax": {
             "description": "Exportieren/Importieren von Einstellungen für Steueranbieter"
         }
+    },
+    "permissions": {
+        "tax:read": "Steueranbieter anzeigen und Steuern berechnen",
+        "tax:update": "Steueranbieter aktualisieren"
     }
 }

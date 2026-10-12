@@ -57,5 +57,9 @@
         "VirtoCommerce.Tax": {
             "description": "导出/导入税务提供者设置"
         }
+    },
+    "permissions": {
+        "tax:read": "查看税务提供者并计算税费",
+        "tax:update": "更新税务提供者"
     }
 }
