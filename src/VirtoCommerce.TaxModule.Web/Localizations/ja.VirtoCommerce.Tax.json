@@ -57,5 +57,9 @@
         "VirtoCommerce.Tax": {
             "description": "税務プロバイダー設定のエクスポート/インポート"
         }
+    },
+    "permissions": {
+        "tax:read": "税務プロバイダーの表示と税金の計算",
+        "tax:update": "税務プロバイダーの更新"
     }
 }

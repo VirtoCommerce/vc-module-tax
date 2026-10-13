@@ -9,6 +9,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.TaxModule.Core.Model;
@@ -65,6 +66,9 @@ namespace VirtoCommerce.TaxModule.Web
 
             var settingsRegistrar = applicationBuilder.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
             settingsRegistrar.RegisterSettings(Core.ModuleConstants.Settings.AllSettings, ModuleInfo.Id);
+
+            var permissionsRegistrar = applicationBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
+            permissionsRegistrar.RegisterPermissions(ModuleInfo.Id, "Tax", Core.ModuleConstants.Security.Permissions.AllPermissions);
 
             PolymorphJsonConverter.RegisterTypeForDiscriminator(typeof(TaxProvider), nameof(TaxProvider.TypeName));
 

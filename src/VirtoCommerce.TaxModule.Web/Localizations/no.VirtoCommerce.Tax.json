@@ -57,5 +57,9 @@
     "VirtoCommerce.Tax": {
       "description": "Eksporter/importer innstillinger for skatteleverandør"
     }
+  },
+  "permissions": {
+    "tax:read": "Vis skatteleverandører og beregn skatt",
+    "tax:update": "Oppdater skatteleverandører"
   }
 }
