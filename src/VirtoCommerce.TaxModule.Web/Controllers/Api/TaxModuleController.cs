@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.TaxModule.Core;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Model.Search;
 using VirtoCommerce.TaxModule.Core.Services;
@@ -10,6 +12,7 @@ using VirtoCommerce.TaxModule.Core.Services;
 namespace VirtoCommerce.TaxModule.Web.Controllers.Api
 {
     [Route("api/taxes")]
+    [Authorize]
     public class TaxModuleController : Controller
     {
         private readonly ITaxProviderSearchService _taxProviderSearchService;
@@ -23,6 +26,7 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
 
         [HttpPost]
         [Route("search")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<TaxProviderSearchResult>> SearchTaxProviders([FromBody] TaxProviderSearchCriteria criteria)
         {
             var result = await _taxProviderSearchService.SearchNoCloneAsync(criteria);
@@ -31,6 +35,7 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<TaxProviderSearchResult>> GetTaxProviderById(string id)
         {
             var result = await _taxProviderService.GetNoCloneAsync(id);
@@ -39,6 +44,7 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
 
         [HttpPut]
         [Route("")]
+        [Authorize(ModuleConstants.Security.Permissions.Update)]
         public async Task<ActionResult<TaxProvider>> UpdateTaxProvider([FromBody] TaxProvider taxProvider)
         {
             await _taxProviderService.SaveChangesAsync(new[] { taxProvider });
@@ -53,6 +59,7 @@ namespace VirtoCommerce.TaxModule.Web.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("{storeId}/evaluate")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<TaxRate[]>> EvaluateTaxes(string storeId, [FromBody] TaxEvaluationContext evalContext)
         {
             var result = new List<TaxRate>();
