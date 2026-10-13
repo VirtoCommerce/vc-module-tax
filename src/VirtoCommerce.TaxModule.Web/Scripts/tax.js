@@ -12,6 +12,7 @@ angular.module(moduleName, ['ngSanitize'])
                 //Register tax widget for store
                 widgetService.registerWidget({
                     controller: 'virtoCommerce.taxModule.storeTaxingWidgetController',
+                    permission: 'tax:read',
                     template: 'Modules/$(VirtoCommerce.Tax)/Scripts/widgets/storeTaxingWidget.tpl.html'
                 }, 'storeDetail');
 

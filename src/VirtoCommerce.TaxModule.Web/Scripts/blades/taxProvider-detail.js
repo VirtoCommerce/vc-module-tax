@@ -1,6 +1,7 @@
 angular.module('virtoCommerce.taxModule')
 .controller('virtoCommerce.taxModule.taxProviderDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.taxModule.taxProviders', function ($scope, bladeNavigationService, dialogService, settings, taxProviders) {
     var blade = $scope.blade;
+    blade.updatePermission = 'tax:update';
 
     function initializeBlade(data) {    
       
