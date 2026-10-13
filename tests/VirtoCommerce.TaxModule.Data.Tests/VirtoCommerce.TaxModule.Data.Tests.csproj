@@ -15,4 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\VirtoCommerce.TaxModule.Web\VirtoCommerce.TaxModule.Web.csproj" />
+  </ItemGroup>
 </Project>

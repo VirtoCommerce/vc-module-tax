@@ -57,5 +57,9 @@
         "VirtoCommerce.Tax": {
             "description": "Export/import tax provider settings"
         }
+    },
+    "permissions": {
+        "tax:read": "View tax providers and evaluate taxes",
+        "tax:update": "Update tax providers"
     }
 }
