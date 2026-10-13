@@ -57,5 +57,9 @@
         "VirtoCommerce.Tax": {
             "description": "Eksportuj/Importuj ustawienia dostawcy podatków"
         }
+    },
+    "permissions": {
+        "tax:read": "Wyświetl dostawców podatków i oblicz podatki",
+        "tax:update": "Aktualizuj dostawców podatków"
     }
 }

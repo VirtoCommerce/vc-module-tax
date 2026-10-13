@@ -8,6 +8,17 @@ namespace VirtoCommerce.TaxModule.Core
     [ExcludeFromCodeCoverage]
     public class ModuleConstants
     {
+        public static class Security
+        {
+            public static class Permissions
+            {
+                public const string Read = "tax:read";
+                public const string Update = "tax:update";
+
+                public static string[] AllPermissions { get; } = [Read, Update];
+            }
+        }
+
         public static class Settings
         {
             public static class General

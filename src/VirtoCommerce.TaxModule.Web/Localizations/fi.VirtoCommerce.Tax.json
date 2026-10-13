@@ -57,5 +57,9 @@
     "VirtoCommerce.Tax": {
       "description": "Vie/tuo verotoimittajan asetukset"
     }
+  },
+  "permissions": {
+    "tax:read": "Näytä verotoimittajat ja laske verot",
+    "tax:update": "Päivitä verotoimittajia"
   }
 }

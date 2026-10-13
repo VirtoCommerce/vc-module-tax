@@ -57,5 +57,9 @@
         "VirtoCommerce.Tax": {
             "description": "Exportar/Importar configurações do fornecedor de impostos"
         }
+    },
+    "permissions": {
+        "tax:read": "Visualizar fornecedores de impostos e calcular impostos",
+        "tax:update": "Atualizar fornecedores de impostos"
     }
 }
