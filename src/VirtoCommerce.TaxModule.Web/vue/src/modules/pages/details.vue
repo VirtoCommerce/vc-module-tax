@@ -67,7 +67,7 @@ import { api } from "../api";
 import ImageField from "../components/ImageField.vue";
 import SettingsEditor from "../components/SettingsEditor.vue";
 import { URL, providerName, type TaxProvider } from "../methods";
-import { loadLegacyTexts } from "../utils";
+import { useLegacyTexts } from "../utils";
 
 // not routable: the provider and its store come only through options, which a page reload doesn't restore
 defineBlade({
@@ -80,7 +80,7 @@ const { t } = useI18n({ useScope: "global" });
 const { options, callParent } = useBlade<{ method?: TaxProvider; storeId: string }>();
 
 const item = ref<TaxProvider>(JSON.parse(JSON.stringify(options.value?.method ?? {})));
-const texts = ref<Record<string, unknown>>({});
+const texts = useLegacyTexts();
 const name = computed(() => providerName(texts.value, item.value));
 
 const form = useBladeForm({
@@ -125,10 +125,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-onMounted(async () => {
-  texts.value = await loadLegacyTexts();
-  await load();
-});
+onMounted(load);
 </script>
 
 <style lang="scss">

@@ -1,5 +1,5 @@
 import type { SettingEntry } from "./components/SettingsEditor.vue";
-import { legacyText } from "./utils";
+import { legacyText, type LegacyTexts } from "./utils";
 
 // Tax providers of a store (api/taxes). The server picks the concrete type from typeName: PUT the whole object back.
 export interface TaxProvider {
@@ -16,7 +16,7 @@ export interface TaxProvider {
 export const URL = "/api/taxes";
 
 // a tax provider has no name of its own: the AngularJS texts per type ("tax.labels.<typeName>.name")
-export const providerName = (texts: Record<string, unknown>, p: TaxProvider) =>
+export const providerName = (texts: LegacyTexts, p: TaxProvider) =>
   legacyText(texts, "tax", "labels", p.typeName ?? "", "name") ?? p.typeName ?? p.code ?? "";
-export const providerDescription = (texts: Record<string, unknown>, p: TaxProvider) =>
+export const providerDescription = (texts: LegacyTexts, p: TaxProvider) =>
   legacyText(texts, "tax", "labels", p.typeName ?? "", "description") ?? "";
