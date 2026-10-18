@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "Verotoimittajat",
+    "EMPTY": "Ei rekisteröityjä verotoimittajia",
+    "GENERAL": "Yleiset",
+    "ACTIVE": "Aktiivinen",
+    "INACTIVE": "Ei aktiivinen",
+    "FIELDS": {
+      "LOGO": "Logo",
+      "NAME": "Nimi",
+      "CODE": "Koodi",
+      "PRIORITY": "Prioriteetti",
+      "STATUS": "Tila",
+      "IS_ACTIVE": "Aktiivinen",
+      "IS_ACTIVE_HINT": "Kauppa käyttää ensimmäistä aktiivista verotoimittajaa"
+    },
+    "TOOLBAR": {
+      "REFRESH": "Päivitä",
+      "SAVE": "Tallenna",
+      "RESET": "Palauta"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Muutoksia ei ole tallennettu. Suljetaanko silti?"
+    }
+  }
+}

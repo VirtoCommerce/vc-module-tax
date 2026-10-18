@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "Skatteleverantörer",
+    "EMPTY": "Inga skatteleverantörer registrerade",
+    "GENERAL": "Allmänt",
+    "ACTIVE": "Aktiv",
+    "INACTIVE": "Inaktiv",
+    "FIELDS": {
+      "LOGO": "Logotyp",
+      "NAME": "Namn",
+      "CODE": "Kod",
+      "PRIORITY": "Prioritet",
+      "STATUS": "Status",
+      "IS_ACTIVE": "Aktiv",
+      "IS_ACTIVE_HINT": "Butiken använder den första aktiva skatteleverantören"
+    },
+    "TOOLBAR": {
+      "REFRESH": "Uppdatera",
+      "SAVE": "Spara",
+      "RESET": "Återställ"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Du har osparade ändringar. Stäng ändå?"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "tax": {
+    "labels": {
+      "FixedRateTaxProvider": {
+        "name": "שיעור מס קבוע באחוזים",
+        "description": "שיעור מס קבוע באחוזים"
+      }
+    }
+  },
+  "settings": {
+    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+      "title": "שיעור מס קבוע %",
+      "description": "שיעור מס קבוע"
+    },
+    "VirtoCommerce.Core.General.TaxTypes": {
+      "title": "סוגי מס",
+      "description": "סוגי המס הזמינים במערכת"
+    }
+  },
+  "permissions": {
+    "tax:read": "צפייה בספקי מס וחישוב מסים",
+    "tax:update": "עדכון ספקי מס"
+  }
+}

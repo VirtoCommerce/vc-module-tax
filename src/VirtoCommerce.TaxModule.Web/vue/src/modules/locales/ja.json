@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "税務プロバイダー",
+    "EMPTY": "登録されている税務プロバイダーはありません",
+    "GENERAL": "一般",
+    "ACTIVE": "有効",
+    "INACTIVE": "無効",
+    "FIELDS": {
+      "LOGO": "ロゴ",
+      "NAME": "名前",
+      "CODE": "コード",
+      "PRIORITY": "優先度",
+      "STATUS": "ステータス",
+      "IS_ACTIVE": "有効",
+      "IS_ACTIVE_HINT": "ストアでは最初の有効な税務プロバイダーが使用されます"
+    },
+    "TOOLBAR": {
+      "REFRESH": "更新",
+      "SAVE": "保存",
+      "RESET": "リセット"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "保存されていない変更があります。閉じてもよろしいですか？"
+    }
+  }
+}

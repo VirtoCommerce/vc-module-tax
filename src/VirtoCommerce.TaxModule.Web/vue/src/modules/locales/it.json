@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "Fornitori di tasse",
+    "EMPTY": "Nessun fornitore di tasse registrato",
+    "GENERAL": "Generale",
+    "ACTIVE": "Attivo",
+    "INACTIVE": "Inattivo",
+    "FIELDS": {
+      "LOGO": "Logo",
+      "NAME": "Nome",
+      "CODE": "Codice",
+      "PRIORITY": "Priorità",
+      "STATUS": "Stato",
+      "IS_ACTIVE": "Attivo",
+      "IS_ACTIVE_HINT": "Il negozio utilizza il primo fornitore di tasse attivo"
+    },
+    "TOOLBAR": {
+      "REFRESH": "Aggiorna",
+      "SAVE": "Salva",
+      "RESET": "Reimposta"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Ci sono modifiche non salvate. Chiudere comunque?"
+    }
+  }
+}

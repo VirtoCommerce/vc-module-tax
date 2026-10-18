@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "Dostawcy podatków",
+    "EMPTY": "Brak zarejestrowanych dostawców podatków",
+    "GENERAL": "Ogólne",
+    "ACTIVE": "Aktywny",
+    "INACTIVE": "Nieaktywny",
+    "FIELDS": {
+      "LOGO": "Logo",
+      "NAME": "Nazwa",
+      "CODE": "Kod",
+      "PRIORITY": "Priorytet",
+      "STATUS": "Status",
+      "IS_ACTIVE": "Aktywny",
+      "IS_ACTIVE_HINT": "Sklep używa pierwszego aktywnego dostawcy podatków"
+    },
+    "TOOLBAR": {
+      "REFRESH": "Odśwież",
+      "SAVE": "Zapisz",
+      "RESET": "Resetuj"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Masz niezapisane zmiany. Zamknąć mimo to?"
+    }
+  }
+}
