@@ -1,0 +1,24 @@
+{
+  "tax": {
+    "labels": {
+      "FixedRateTaxProvider": {
+        "name": "معدل ضريبة بنسبة مئوية ثابتة",
+        "description": "معدل ضريبة بنسبة مئوية ثابتة"
+      }
+    }
+  },
+  "settings": {
+    "VirtoCommerce.Core.FixedTaxRateProvider.Rate": {
+      "title": "معدل الضريبة الثابت %",
+      "description": "معدل الضريبة الثابت"
+    },
+    "VirtoCommerce.Core.General.TaxTypes": {
+      "title": "أنواع الضرائب",
+      "description": "أنواع الضرائب المتاحة في النظام"
+    }
+  },
+  "permissions": {
+    "tax:read": "عرض مزوّدي الضرائب وحساب الضرائب",
+    "tax:update": "تحديث مزوّدي الضرائب"
+  }
+}

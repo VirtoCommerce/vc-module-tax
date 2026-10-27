@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "Steueranbieter",
+    "EMPTY": "Keine Steueranbieter registriert",
+    "GENERAL": "Allgemein",
+    "ACTIVE": "Aktiv",
+    "INACTIVE": "Inaktiv",
+    "FIELDS": {
+      "LOGO": "Logo",
+      "NAME": "Name",
+      "CODE": "Code",
+      "PRIORITY": "Priorität",
+      "STATUS": "Status",
+      "IS_ACTIVE": "Aktiv",
+      "IS_ACTIVE_HINT": "Der Shop verwendet den ersten aktiven Steueranbieter"
+    },
+    "TOOLBAR": {
+      "REFRESH": "Aktualisieren",
+      "SAVE": "Speichern",
+      "RESET": "Zurücksetzen"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Sie haben nicht gespeicherte Änderungen. Trotzdem schließen?"
+    }
+  }
+}

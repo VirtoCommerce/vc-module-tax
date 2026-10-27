@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "Skatteleverandører",
+    "EMPTY": "Ingen skatteleverandører registrert",
+    "GENERAL": "Generelt",
+    "ACTIVE": "Aktiv",
+    "INACTIVE": "Inaktiv",
+    "FIELDS": {
+      "LOGO": "Logo",
+      "NAME": "Navn",
+      "CODE": "Kode",
+      "PRIORITY": "Prioritet",
+      "STATUS": "Status",
+      "IS_ACTIVE": "Aktiv",
+      "IS_ACTIVE_HINT": "Butikken bruker den første aktive skatteleverandøren"
+    },
+    "TOOLBAR": {
+      "REFRESH": "Oppdater",
+      "SAVE": "Lagre",
+      "RESET": "Tilbakestill"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Du har ulagrede endringer. Vil du lukke likevel?"
+    }
+  }
+}
