@@ -1,0 +1,26 @@
+{
+  "TAX": {
+    "TITLE": "ספקי מס",
+    "EMPTY": "אין ספקי מס רשומים",
+    "GENERAL": "כללי",
+    "ACTIVE": "פעיל",
+    "INACTIVE": "לא פעיל",
+    "FIELDS": {
+      "LOGO": "לוגו",
+      "NAME": "שם",
+      "CODE": "קוד",
+      "PRIORITY": "עדיפות",
+      "STATUS": "סטטוס",
+      "IS_ACTIVE": "פעיל",
+      "IS_ACTIVE_HINT": "החנות משתמשת בספק המס הפעיל הראשון"
+    },
+    "TOOLBAR": {
+      "REFRESH": "רענון",
+      "SAVE": "שמירה",
+      "RESET": "איפוס"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "יש שינויים שלא נשמרו. לסגור בכל זאת?"
+    }
+  }
+}
