@@ -63,20 +63,40 @@ public class TaxStoreSetupPartTests
         Assert.Equal(expectWarning, findings.Any(x => x.Id == "tax-no-active-provider" && x.Severity == StoreSetupFindingSeverity.Warning));
     }
 
+    // The cart takes the first active provider in the search's order, whatever the priorities say.
     [Fact]
-    public async Task CheckAsync_WithSeveralActiveProviders_Warns()
+    public async Task CheckAsync_WithSeveralActiveProviders_Warns_AndTheProviderInUseIsTheFirstInTheSearchOrder()
     {
         //Arrange
-        _saved.Add(new FixedRateTaxProvider { StoreId = StoreId, IsActive = true, Priority = 1 });
-        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true, Priority = 2 });
+        _saved.Add(new FixedRateTaxProvider { StoreId = StoreId, IsActive = true, Priority = 2 });
+        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true, Priority = 1 });
+        var part = CreatePart();
 
         //Act
-        var findings = await CreatePart().CheckAsync(CreateContext());
+        var findings = await part.CheckAsync(CreateContext());
+        var state = (TaxStoreSetupSection)await part.GetStateAsync(CreateContext().Store);
 
         //Assert
         var finding = Assert.Single(findings);
         Assert.Equal("tax-several-active-providers", finding.Id);
         Assert.Contains($"{FixedRateCode}, {TestCode}", finding.Evidence);
+        Assert.Equal(FixedRateCode, state.Provider);
+    }
+
+    // A setting the provider never saved has its default: sending that value changes nothing.
+    [Fact]
+    public async Task PlanAsync_ASettingSentWithTheValueInEffect_ChangesNothing()
+    {
+        //Arrange
+        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true });
+        var section = new TaxStoreSetupSection { Provider = TestCode, Settings = new Dictionary<string, object> { [_rate.Name] = 0m } };
+
+        //Act
+        var plan = await CreatePart().PlanAsync(CreateContext(), section);
+
+        //Assert
+        Assert.Empty(plan.Errors);
+        Assert.Empty(plan.Changes);
     }
 
     [Fact]

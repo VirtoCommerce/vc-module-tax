@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Extensions;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.MCP.StoreSetup;
 using VirtoCommerce.TaxModule.Core.MCP.StoreSetup;
@@ -56,10 +55,7 @@ public class TaxStoreSetupPart(
                 choice.Title = provider.Code;
 
                 // Secrets are not even listed, so the agent never proposes to send one.
-                choice.Settings = GetSettingDescriptors(provider)
-                    .Where(x => !setupSettings.IsSecret(x))
-                    .Select(x => setupSettings.Describe(x, value: null))
-                    .ToList();
+                choice.Settings = setupSettings.DescribeAll(GetSettingDescriptors(provider));
 
                 return choice;
             })
@@ -77,9 +73,7 @@ public class TaxStoreSetupPart(
         section.Provider = provider?.Code ?? string.Empty;
         section.Settings = provider == null
             ? new Dictionary<string, object>()
-            : GetSettingDescriptors(provider)
-                .Where(x => !setupSettings.IsSecret(x))
-                .ToDictionary(x => x.Name, x => GetValue(provider, x), StringComparer.OrdinalIgnoreCase);
+            : setupSettings.GetValues(provider, GetSettingDescriptors(provider));
 
         return section;
     }
@@ -93,7 +87,8 @@ public class TaxStoreSetupPart(
             ? taxPlan.Providers
             : await GetStoreProvidersAsync(store.Id);
 
-        var activeProviders = providers.Where(x => x.IsActive).OrderBy(x => x.Priority).ToList();
+        // In the search's order, the order in which the cart reads them.
+        var activeProviders = providers.Where(x => x.IsActive).ToList();
         var findings = new List<StoreSetupFinding>();
 
         if (activeProviders.Count == 0 && IsTaxCalculationEnabled(store))
@@ -125,7 +120,6 @@ public class TaxStoreSetupPart(
         var tax = (TaxStoreSetupSection)section;
 
         var plan = AbstractTypeFactory<TaxStoreSetupPlan>.TryCreateInstance();
-        plan.Part = PartName;
         plan.Providers = await GetStoreProvidersAsync(context.Store.Id);
 
         TaxProvider target;
@@ -206,44 +200,14 @@ public class TaxStoreSetupPart(
 
     protected virtual void PlanSettings(TaxStoreSetupPlan plan, TaxProvider provider, IDictionary<string, object> settings)
     {
-        var descriptors = GetSettingDescriptors(provider);
+        // Store's rules for a settings map, the same in every part: an unknown name, a secret or a wrong value is
+        // refused, a null returns the default, and a value equal to the one in effect changes nothing.
+        var changed = setupSettings.PlanSettings(plan, provider, GetSettingDescriptors(provider), settings,
+            $"providers.{provider.Code}.", $"Tax provider '{provider.Code}'", "get_store_setup_options");
 
-        // A provider the store has never saved starts with an empty array.
-        provider.Settings = provider.Settings?.ToList() ?? [];
-
-        foreach (var (name, raw) in settings)
+        if (changed.Count > 0)
         {
-            var descriptor = descriptors.FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));
-
-            if (descriptor == null)
-            {
-                plan.Errors.Add($"Tax provider '{provider.Code}' has no setting '{name}'.");
-                continue;
-            }
-
-            // Store's one refusal for every part: a secret, a setting a setup cannot change, a wrong value.
-            if (!setupSettings.TryConvert(descriptor, raw, out var value, out var error))
-            {
-                plan.Errors.Add(error);
-                continue;
-            }
-
-            var entry = provider.Settings.FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));
-
-            if (entry == null)
-            {
-                entry = new ObjectSettingEntry(descriptor);
-                provider.Settings.Add(entry);
-            }
-
-            // A null saves the default itself: the platform's settings save skips a null for most settings.
-            var newValue = value ?? descriptor.DefaultValue;
-
-            if (!StoreSetupValues.AreEqual(entry.Value, newValue))
-            {
-                AddChange(plan, provider, name, entry.Value, newValue);
-                entry.Value = newValue;
-            }
+            plan.ChangedCodes.Add(provider.Code);
         }
     }
 
@@ -271,44 +235,29 @@ public class TaxStoreSetupPart(
     // Tax calculation as the store sets it, or as it would be set after the settings part of the same request.
     protected virtual bool IsTaxCalculationEnabled(Store store)
     {
-        var setting = StoreGeneralSettings.TaxCalculationEnabled;
-        var value = store.Settings?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(setting.Name))?.Value ?? setting.DefaultValue;
-
-        return value is bool enabled ? enabled : bool.TryParse(value?.ToString(), out var parsed) && parsed;
+        return (store.Settings ?? []).GetValue<bool>(StoreGeneralSettings.TaxCalculationEnabled);
     }
 
     protected virtual StoreSetupFinding CreateFinding(Store store, string id, string title, string why, string evidence, string fix)
     {
-        var finding = AbstractTypeFactory<StoreSetupFinding>.TryCreateInstance();
-        finding.Id = id;
-        finding.Part = PartName;
-        finding.Severity = StoreSetupFindingSeverity.Warning;
+        var finding = StoreSetupFinding.ForStore(store, PartName, id, StoreSetupFindingSeverity.Warning, "Tax providers");
         finding.Title = title;
         finding.Why = why;
         finding.Evidence = evidence;
         finding.Fix = fix;
-        finding.Screen = $"Stores > {store.Name ?? store.Id} > Tax providers";
-        finding.ObjectType = nameof(Store);
-        finding.ObjectId = store.Id;
-        finding.ObjectName = store.Name;
 
         return finding;
     }
 
-    // The provider the cart uses: the first active one by priority.
+    // The provider the cart uses: the first active one in the search's order, as the cart and Tax's own REST API take it.
     private static TaxProvider GetUsedProvider(IList<TaxProvider> providers)
     {
-        return providers.Where(x => x.IsActive).OrderBy(x => x.Priority).FirstOrDefault();
+        return providers.FirstOrDefault(x => x.IsActive);
     }
 
     private static void AddChange(TaxStoreSetupPlan plan, TaxProvider provider, string field, object from, object to)
     {
         plan.AddChange($"providers.{provider.Code}.{field}", from, to);
         plan.ChangedCodes.Add(provider.Code);
-    }
-
-    private static object GetValue(TaxProvider provider, SettingDescriptor descriptor)
-    {
-        return provider.Settings?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(descriptor.Name))?.Value ?? descriptor.DefaultValue;
     }
 }
