@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using VirtoCommerce.MCP.Core.Models;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.MCP.StoreSetup;
@@ -60,7 +61,7 @@ public class TaxStoreSetupPartTests
         var findings = await CreatePart().CheckAsync(new StoreSetupContext { Store = store });
 
         //Assert
-        Assert.Equal(expectWarning, findings.Any(x => x.Id == "tax-no-active-provider" && x.Severity == StoreSetupFindingSeverity.Warning));
+        Assert.Equal(expectWarning, findings.Any(x => x.Id == "tax-no-active-provider" && x.Severity == McpFindingSeverities.Warning));
     }
 
     // The cart takes the first active provider in the search's order, whatever the priorities say.

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VirtoCommerce.MCP.Core.Models;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.MCP.StoreSetup;
@@ -32,7 +33,7 @@ public class TaxStoreSetupPart(
     public virtual string Title => "Tax provider";
 
     // Tax's permissions cannot be limited to stores, so they count only when granted globally.
-    public virtual StoreSetupPermissions Permissions => new()
+    public virtual McpSetupPermissions Permissions => new()
     {
         Read = TaxPermissions.Read,
         Update = TaxPermissions.Update,
@@ -44,12 +45,12 @@ public class TaxStoreSetupPart(
     public virtual bool IsRequiredForNewStore => false;
 
     // 1. What can be chosen: every tax provider installed on the platform, with the settings it takes.
-    public virtual Task<IList<StoreSetupChoice>> GetChoicesAsync()
+    public virtual Task<IList<McpSetupChoice>> GetChoicesAsync()
     {
-        IList<StoreSetupChoice> choices = GetInstalledProviders()
+        IList<McpSetupChoice> choices = GetInstalledProviders()
             .Select(provider =>
             {
-                var choice = AbstractTypeFactory<StoreSetupChoice>.TryCreateInstance();
+                var choice = AbstractTypeFactory<McpSetupChoice>.TryCreateInstance();
                 choice.Field = $"{PartName}.provider";
                 choice.Value = provider.Code;
                 choice.Title = provider.Code;
@@ -80,7 +81,7 @@ public class TaxStoreSetupPart(
 
     // 3. What is missing. With a tax section in the request, the check reads the providers as they will be after the
     // change; otherwise the saved ones. Both rules are warnings: a store without tax can still take orders.
-    public virtual async Task<IList<StoreSetupFinding>> CheckAsync(StoreSetupContext context)
+    public virtual async Task<IList<McpFinding>> CheckAsync(StoreSetupContext context)
     {
         var store = context.Store;
         var providers = context.Plans.TryGetValue(PartName, out var plan) && plan is TaxStoreSetupPlan taxPlan
@@ -89,7 +90,7 @@ public class TaxStoreSetupPart(
 
         // In the search's order, the order in which the cart reads them.
         var activeProviders = providers.Where(x => x.IsActive).ToList();
-        var findings = new List<StoreSetupFinding>();
+        var findings = new List<McpFinding>();
 
         if (activeProviders.Count == 0 && IsTaxCalculationEnabled(store))
         {
@@ -115,7 +116,7 @@ public class TaxStoreSetupPart(
     // 4a. Plans the section without side effects: the search returns copies, and nothing is saved here. A provider code
     // activates that provider and switches the others off; an empty code switches every provider off; without a code the
     // providers stay as they are, and the settings go to the provider the cart uses.
-    public virtual async Task<StoreSetupPartPlan> PlanAsync(StoreSetupContext context, object section)
+    public virtual async Task<McpSetupPartPlan> PlanAsync(StoreSetupContext context, object section)
     {
         var tax = (TaxStoreSetupSection)section;
 
@@ -162,7 +163,7 @@ public class TaxStoreSetupPart(
 
     // 4b. Saves the providers the plan changes. The plan was made from the saved rows a moment ago, so a repeat after a
     // failure finds the applied providers unchanged and saves only the rest.
-    public virtual async Task ApplyAsync(StoreSetupContext context, StoreSetupPartPlan plan)
+    public virtual async Task ApplyAsync(StoreSetupContext context, McpSetupPartPlan plan)
     {
         var taxPlan = (TaxStoreSetupPlan)plan;
         var changed = taxPlan.Providers.Where(x => taxPlan.ChangedCodes.Contains(x.Code)).ToList();
@@ -238,9 +239,9 @@ public class TaxStoreSetupPart(
         return (store.Settings ?? []).GetValue<bool>(StoreGeneralSettings.TaxCalculationEnabled);
     }
 
-    protected virtual StoreSetupFinding CreateFinding(Store store, string id, string title, string why, string evidence, string fix)
+    protected virtual McpFinding CreateFinding(Store store, string id, string title, string why, string evidence, string fix)
     {
-        var finding = StoreSetupFinding.ForStore(store, PartName, id, StoreSetupFindingSeverity.Warning, "Tax providers");
+        var finding = StoreSetupFindings.ForStore(store, PartName, id, McpFindingSeverities.Warning, "Tax providers");
         finding.Title = title;
         finding.Why = why;
         finding.Evidence = evidence;
