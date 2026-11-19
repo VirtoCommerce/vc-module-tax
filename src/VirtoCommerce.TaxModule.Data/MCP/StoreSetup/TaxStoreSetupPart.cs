@@ -94,7 +94,7 @@ public class TaxStoreSetupPart(
 
         if (activeProviders.Count == 0 && IsTaxCalculationEnabled(store))
         {
-            findings.Add(CreateFinding(store, "tax-no-active-provider",
+            findings.Add(CreateFinding(store, "tax-no-active-provider", McpFindingSeverities.Warning,
                 "Tax calculation is on, but no tax provider is active",
                 "Prices are shown and orders are placed without tax.",
                 "Tax calculation: on. Active tax providers: none.",
@@ -103,11 +103,38 @@ public class TaxStoreSetupPart(
 
         if (activeProviders.Count > 1)
         {
-            findings.Add(CreateFinding(store, "tax-several-active-providers",
+            findings.Add(CreateFinding(store, "tax-several-active-providers", McpFindingSeverities.Warning,
                 "Several tax providers are active",
                 "The cart uses only the first active provider; the others have no effect.",
                 $"Active, in order: {string.Join(", ", activeProviders.Select(x => x.Code))}.",
                 "Keep one tax provider active."));
+        }
+
+        foreach (var provider in activeProviders)
+        {
+            // A secret is never named, not even when it is missing: a person enters it in the back office.
+            var (names, secretCount) = setupSettings.GetEmptyRequiredSettings(provider, GetSettingDescriptors(provider));
+
+            if (names.Count == 0 && secretCount == 0)
+            {
+                continue;
+            }
+
+            var finding = CreateFinding(store, "tax-provider-needs-settings", McpFindingSeverities.Critical,
+                $"The tax provider {provider.Code} needs its required settings",
+                "Taxes cannot be calculated at checkout until its required settings have values.",
+                StoreSetupFindings.GetEmptySettingsEvidence(names, secretCount),
+                secretCount == 0
+                    ? "Fill the settings in the tax section, or in the back office."
+                    : names.Count == 0
+                        ? "A person enters the secret settings in the back office: secrets are never sent through the agent."
+                        : "Fill the other settings in the tax section; a person enters the secret settings in the back office.");
+            finding.ManualOnly = names.Count == 0;
+            finding.ObjectType = nameof(TaxProvider);
+            finding.ObjectId = provider.Code;
+            finding.ObjectName = provider.Code;
+
+            findings.Add(finding);
         }
 
         return findings;
@@ -166,20 +193,42 @@ public class TaxStoreSetupPart(
     public virtual async Task ApplyAsync(StoreSetupContext context, McpSetupPartPlan plan)
     {
         var taxPlan = (TaxStoreSetupPlan)plan;
-        var changed = taxPlan.Providers.Where(x => taxPlan.ChangedCodes.Contains(x.Code)).ToList();
+        var providers = await GetStoreProvidersAsync(context.Store.Id);
+        var changed = new List<TaxProvider>();
 
-        if (changed.Count == 0)
+        // The providers read again: the fields of the plan's rows take their planned values, so a change made since the
+        // plan stays.
+        foreach (var planned in taxPlan.Providers)
         {
-            return;
-        }
+            var fields = taxPlan.GetChangedFields($"providers.{planned.Code}.");
 
-        // A provider the store has never saved comes from the search without a store.
-        foreach (var provider in changed)
-        {
+            if (fields.Count == 0)
+            {
+                continue;
+            }
+
+            var provider = providers.First(x => x.Code.EqualsIgnoreCase(planned.Code));
+            ApplyChangedFields(planned, provider, fields);
+            // A provider the store has never saved comes from the search without a store.
             provider.StoreId = context.Store.Id;
+            changed.Add(provider);
         }
 
-        await taxProviderService.SaveChangesAsync(changed);
+        if (changed.Count > 0)
+        {
+            await taxProviderService.SaveChangesAsync(changed);
+        }
+    }
+
+    // The planned values of the fields the plan changes, on the provider read again.
+    protected virtual void ApplyChangedFields(TaxProvider planned, TaxProvider provider, ISet<string> fields)
+    {
+        if (fields.Contains("active"))
+        {
+            provider.IsActive = planned.IsActive;
+        }
+
+        StoreSetupSettingsExtensions.CopySettings(planned, provider, fields);
     }
 
     protected virtual void PlanActive(TaxStoreSetupPlan plan, TaxProvider provider, bool isActive)
@@ -203,13 +252,8 @@ public class TaxStoreSetupPart(
     {
         // Store's rules for a settings map, the same in every part: an unknown name, a secret or a wrong value is
         // refused, a null returns the default, and a value equal to the one in effect changes nothing.
-        var changed = setupSettings.PlanSettings(plan, provider, GetSettingDescriptors(provider), settings,
+        setupSettings.PlanSettings(plan, provider, GetSettingDescriptors(provider), settings,
             $"providers.{provider.Code}.", $"Tax provider '{provider.Code}'", "get_store_setup_options");
-
-        if (changed.Count > 0)
-        {
-            plan.ChangedCodes.Add(provider.Code);
-        }
     }
 
     // The providers installed on the platform: the types registered with the factory, as Tax's own search reads them.
@@ -239,9 +283,9 @@ public class TaxStoreSetupPart(
         return (store.Settings ?? []).GetValue<bool>(StoreGeneralSettings.TaxCalculationEnabled);
     }
 
-    protected virtual McpFinding CreateFinding(Store store, string id, string title, string why, string evidence, string fix)
+    protected virtual McpFinding CreateFinding(Store store, string id, string severity, string title, string why, string evidence, string fix)
     {
-        var finding = StoreSetupFindings.ForStore(store, PartName, id, McpFindingSeverities.Warning, "Tax providers");
+        var finding = StoreSetupFindings.ForStore(store, PartName, id, severity, "Tax providers");
         finding.Title = title;
         finding.Why = why;
         finding.Evidence = evidence;
@@ -259,6 +303,5 @@ public class TaxStoreSetupPart(
     private static void AddChange(TaxStoreSetupPlan plan, TaxProvider provider, string field, object from, object to)
     {
         plan.AddChange($"providers.{provider.Code}.{field}", from, to);
-        plan.ChangedCodes.Add(provider.Code);
     }
 }

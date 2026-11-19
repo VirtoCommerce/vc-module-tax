@@ -26,6 +26,7 @@ public class TaxStoreSetupPartTests
 
     private static readonly SettingDescriptor _rate = new() { Name = "Test.Tax.Rate", ValueType = SettingValueType.Decimal, DefaultValue = 0m };
     private static readonly SettingDescriptor _apiKey = new() { Name = "Test.Tax.ApiKey", ValueType = SettingValueType.ShortText };
+    private static readonly SettingDescriptor _accountId = new() { Name = "Test.Tax.AccountId", ValueType = SettingValueType.ShortText, IsRequired = true };
 
     // The providers the store has saved; the search adds a new instance of every installed provider the store has not saved.
     private readonly List<TaxProvider> _saved = [];
@@ -40,7 +41,7 @@ public class TaxStoreSetupPartTests
         //Assert
         Assert.Equal([FixedRateCode, TestCode], choices.Select(x => x.Value));
         Assert.All(choices, x => Assert.Equal("tax.provider", x.Field));
-        Assert.Equal([_rate.Name], choices.Single(x => x.Value == TestCode).Settings.Select(x => x.Name));
+        Assert.Equal([_rate.Name, _accountId.Name], choices.Single(x => x.Value == TestCode).Settings.Select(x => x.Name));
     }
 
     [Theory]
@@ -70,7 +71,7 @@ public class TaxStoreSetupPartTests
     {
         //Arrange
         _saved.Add(new FixedRateTaxProvider { StoreId = StoreId, IsActive = true, Priority = 2 });
-        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true, Priority = 1 });
+        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true, Priority = 1, Settings = [new ObjectSettingEntry(_accountId) { Value = "ACC-1" }] });
         var part = CreatePart();
 
         //Act
@@ -173,6 +174,45 @@ public class TaxStoreSetupPartTests
         Assert.Empty(repeat.Changes);
     }
 
+    // Applying reads the providers again: a setting changed in the back office since the plan, which the plan does not
+    // name, keeps its new value.
+    [Fact]
+    public async Task ApplyAsync_KeepsWhatChangedSinceThePlan()
+    {
+        //Arrange
+        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true, Settings = [new ObjectSettingEntry(_rate) { Value = 0.07m }] });
+        var part = CreatePart();
+        var context = CreateContext();
+        var plan = await part.PlanAsync(context, new TaxStoreSetupSection { Provider = TestCode, Settings = new Dictionary<string, object> { [_rate.Name] = 0.19m } });
+        _saved.Single().Settings.Add(new ObjectSettingEntry(_accountId) { Value = "ACC-1" });
+
+        //Act
+        await part.ApplyAsync(context, plan);
+
+        //Assert
+        var saved = Assert.Single(_saved);
+        Assert.Equal(0.19m, saved.Settings.Single(x => x.Name == _rate.Name).Value);
+        Assert.Equal("ACC-1", saved.Settings.Single(x => x.Name == _accountId.Name).Value);
+    }
+
+    // Q6: a required setting left empty blocks going live, as for payment and shipping methods.
+    [Fact]
+    public async Task CheckAsync_ActiveProviderWithAnEmptyRequiredSetting_IsBlocking()
+    {
+        //Arrange
+        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true });
+
+        //Act
+        var findings = await CreatePart().CheckAsync(CreateContext());
+
+        //Assert
+        var finding = Assert.Single(findings, x => x.Id == "tax-provider-needs-settings");
+        Assert.Equal(McpFindingSeverities.Critical, finding.Severity);
+        Assert.Equal("Empty: Test.Tax.AccountId.", finding.Evidence);
+        Assert.False(finding.ManualOnly);
+        Assert.Equal(TestCode, finding.ObjectId);
+    }
+
     private static StoreSetupContext CreateContext()
     {
         return new StoreSetupContext { Store = new Store { Id = StoreId, Name = "EU store", Settings = [] } };
@@ -205,7 +245,7 @@ public class TaxStoreSetupPartTests
             .Returns(Task.CompletedTask);
 
         var settingsRegistrar = new Mock<ISettingsRegistrar>();
-        settingsRegistrar.Setup(x => x.GetSettingsForType(nameof(TestTaxProvider))).Returns([_rate, _apiKey]);
+        settingsRegistrar.Setup(x => x.GetSettingsForType(nameof(TestTaxProvider))).Returns([_rate, _apiKey, _accountId]);
         settingsRegistrar.Setup(x => x.GetSettingsForType(nameof(FixedRateTaxProvider))).Returns([]);
 
         return new TestableTaxStoreSetupPart(searchService.Object, _providerService.Object, settingsRegistrar.Object, new TestStoreSetupSettings());
