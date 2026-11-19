@@ -223,9 +223,10 @@ public class TaxStoreSetupPartTests
         var searchService = new Mock<ITaxProviderSearchService>();
         searchService
             .Setup(x => x.SearchAsync(It.IsAny<TaxProviderSearchCriteria>(), It.IsAny<bool>()))
-            .ReturnsAsync((TaxProviderSearchCriteria criteria, bool _) =>
+            .ReturnsAsync((TaxProviderSearchCriteria criteria, bool clone) =>
             {
-                var saved = _saved.Where(x => criteria.StoreIds.Contains(x.StoreId)).Select(x => x.CloneTyped()).ToList();
+                // As the search service: copies when asked, the saved instances themselves otherwise.
+                var saved = _saved.Where(x => criteria.StoreIds.Contains(x.StoreId)).Select(x => clone ? x.CloneTyped() : x).ToList();
                 var installed = new TaxProvider[] { new FixedRateTaxProvider(), new TestTaxProvider() };
                 var all = saved.Concat(installed.Where(x => !saved.Any(s => s.Code == x.Code))).ToList();
 
@@ -249,20 +250,5 @@ public class TaxStoreSetupPartTests
         settingsRegistrar.Setup(x => x.GetSettingsForType(nameof(FixedRateTaxProvider))).Returns([]);
 
         return new TestableTaxStoreSetupPart(searchService.Object, _providerService.Object, settingsRegistrar.Object, new TestStoreSetupSettings());
-    }
-
-    // The part with a fixed list of installed providers: the factory it reads them from is global, and other tests
-    // register their own provider types there.
-    private sealed class TestableTaxStoreSetupPart(
-        ITaxProviderSearchService taxProviderSearchService,
-        ITaxProviderService taxProviderService,
-        ISettingsRegistrar settingsRegistrar,
-        IStoreSetupSettings setupSettings)
-        : TaxStoreSetupPart(taxProviderSearchService, taxProviderService, settingsRegistrar, setupSettings)
-    {
-        protected override IEnumerable<TaxProvider> GetInstalledProviders()
-        {
-            return [new FixedRateTaxProvider(), new TestTaxProvider()];
-        }
     }
 }

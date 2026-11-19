@@ -228,7 +228,7 @@ public class TaxStoreSetupPart(
             provider.IsActive = planned.IsActive;
         }
 
-        StoreSetupSettingsExtensions.CopySettings(planned, provider, fields);
+        setupSettings.CopySettings(planned, provider, fields);
     }
 
     protected virtual void PlanActive(TaxStoreSetupPlan plan, TaxProvider provider, bool isActive)
