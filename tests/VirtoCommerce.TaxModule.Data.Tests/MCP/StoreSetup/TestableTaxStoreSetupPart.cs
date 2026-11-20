@@ -14,8 +14,9 @@ public sealed class TestableTaxStoreSetupPart(
     ITaxProviderSearchService taxProviderSearchService,
     ITaxProviderService taxProviderService,
     ISettingsRegistrar settingsRegistrar,
-    IStoreSetupSettings setupSettings)
-    : TaxStoreSetupPart(taxProviderSearchService, taxProviderService, settingsRegistrar, setupSettings)
+    IStoreSetupSettings setupSettings,
+    IStoreSetupFindings setupFindings)
+    : TaxStoreSetupPart(taxProviderSearchService, taxProviderService, settingsRegistrar, setupSettings, setupFindings)
 {
     protected override IEnumerable<TaxProvider> GetInstalledProviders()
     {

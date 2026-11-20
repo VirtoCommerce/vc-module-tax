@@ -23,7 +23,8 @@ public class TaxStoreSetupPart(
     ITaxProviderSearchService taxProviderSearchService,
     ITaxProviderService taxProviderService,
     ISettingsRegistrar settingsRegistrar,
-    IStoreSetupSettings setupSettings)
+    IStoreSetupSettings setupSettings,
+    IStoreSetupFindings setupFindings)
     : IStoreSetupChoices, IStoreSetupState, IStoreSetupCheck, IStoreSetupSection
 {
     public const string PartName = "tax";
@@ -33,12 +34,18 @@ public class TaxStoreSetupPart(
     public virtual string Title => "Tax provider";
 
     // Tax's permissions cannot be limited to stores, so they count only when granted globally.
-    public virtual McpSetupPermissions Permissions => new()
+    public virtual McpSetupPermissions Permissions
     {
-        Read = TaxPermissions.Read,
-        Update = TaxPermissions.Update,
-        Create = TaxPermissions.Update,
-    };
+        get
+        {
+            var permissions = AbstractTypeFactory<McpSetupPermissions>.TryCreateInstance();
+            permissions.Read = TaxPermissions.Read;
+            permissions.Update = TaxPermissions.Update;
+            permissions.Create = TaxPermissions.Update;
+
+            return permissions;
+        }
+    }
 
     public virtual Type SectionType => typeof(TaxStoreSetupSection);
 
@@ -80,7 +87,8 @@ public class TaxStoreSetupPart(
     }
 
     // 3. What is missing. With a tax section in the request, the check reads the providers as they will be after the
-    // change; otherwise the saved ones. Both rules are warnings: a store without tax can still take orders.
+    // change; otherwise the saved ones. Which providers are active is a warning, as a store without tax can still take
+    // orders; a provider's empty required settings are critical, as taxes cannot be calculated at checkout.
     public virtual async Task<IList<McpFinding>> CheckAsync(StoreSetupContext context)
     {
         var store = context.Store;
@@ -123,12 +131,8 @@ public class TaxStoreSetupPart(
             var finding = CreateFinding(store, "tax-provider-needs-settings", McpFindingSeverities.Critical,
                 $"The tax provider {provider.Code} needs its required settings",
                 "Taxes cannot be calculated at checkout until its required settings have values.",
-                StoreSetupFindings.GetEmptySettingsEvidence(names, secretCount),
-                secretCount == 0
-                    ? "Fill the settings in the tax section, or in the back office."
-                    : names.Count == 0
-                        ? "A person enters the secret settings in the back office: secrets are never sent through the agent."
-                        : "Fill the other settings in the tax section; a person enters the secret settings in the back office.");
+                setupFindings.GetEmptySettingsEvidence(names, secretCount),
+                GetEmptySettingsFix(names, secretCount));
             finding.ManualOnly = names.Count == 0;
             finding.ObjectType = nameof(TaxProvider);
             finding.ObjectId = provider.Code;
@@ -140,9 +144,11 @@ public class TaxStoreSetupPart(
         return findings;
     }
 
-    // 4a. Plans the section without side effects: the search returns copies, and nothing is saved here. A provider code
-    // activates that provider and switches the others off; an empty code switches every provider off; without a code the
-    // providers stay as they are, and the settings go to the provider the cart uses.
+    // 4a. Plans the section without side effects: the search returns copies, and nothing is saved here. The Store tool
+    // plans for the dry run, again for the requester at approval, and again right before applying. A provider code
+    // activates that provider and switches the others off; an empty code switches every provider off, and a code of
+    // spaces only is refused; without a code the providers stay as they are, and the settings go to the provider the cart
+    // uses.
     public virtual async Task<McpSetupPartPlan> PlanAsync(StoreSetupContext context, object section)
     {
         var tax = (TaxStoreSetupSection)section;
@@ -159,6 +165,15 @@ public class TaxStoreSetupPart(
         else
         {
             var code = tax.Provider.Trim();
+
+            // Spaces only are no code: payment and shipping refuse a blank code too, and only an empty text switches
+            // every provider off.
+            if (code.Length == 0 && tax.Provider.Length > 0)
+            {
+                plan.Errors.Add("The tax provider code is spaces only. Send a code from get_store_setup_options, or an empty text to switch every provider off.");
+                return plan;
+            }
+
             target = code.Length == 0 ? null : plan.Providers.FirstOrDefault(x => x.Code.EqualsIgnoreCase(code));
 
             if (code.Length > 0 && target == null)
@@ -188,7 +203,8 @@ public class TaxStoreSetupPart(
         return plan;
     }
 
-    // 4b. Saves the providers the plan changes. The plan was made from the saved rows a moment ago, so a repeat after a
+    // 4b. Saves what the plan changes onto the store's providers read again, so a change made since the plan stays: the
+    // fields of the plan's rows (active and settings) take their planned values, the others keep theirs. A repeat after a
     // failure finds the applied providers unchanged and saves only the rest.
     public virtual async Task ApplyAsync(StoreSetupContext context, McpSetupPartPlan plan)
     {
@@ -196,8 +212,6 @@ public class TaxStoreSetupPart(
         var providers = await GetStoreProvidersAsync(context.Store.Id);
         var changed = new List<TaxProvider>();
 
-        // The providers read again: the fields of the plan's rows take their planned values, so a change made since the
-        // plan stays.
         foreach (var planned in taxPlan.Providers)
         {
             var fields = taxPlan.GetChangedFields(GetFieldPrefix(planned.Code));
@@ -294,7 +308,7 @@ public class TaxStoreSetupPart(
 
     protected virtual McpFinding CreateFinding(Store store, string id, string severity, string title, string why, string evidence, string fix)
     {
-        var finding = StoreSetupFindings.ForStore(store, PartName, id, severity, "Tax providers");
+        var finding = setupFindings.ForStore(store, PartName, id, severity, "Tax providers");
         finding.Title = title;
         finding.Why = why;
         finding.Evidence = evidence;
@@ -304,13 +318,27 @@ public class TaxStoreSetupPart(
     }
 
     // The provider the cart uses: the first active one in the search's order, as the cart and Tax's own REST API take it.
-    private static TaxProvider GetUsedProvider(IList<TaxProvider> providers)
+    protected virtual TaxProvider GetUsedProvider(IList<TaxProvider> providers)
     {
         return providers.FirstOrDefault(x => x.IsActive);
     }
 
-    private static void AddChange(TaxStoreSetupPlan plan, TaxProvider provider, string field, object from, object to)
+    // A row of the plan for one provider's field, with the provider's prefix (GetFieldPrefix).
+    protected virtual void AddChange(TaxStoreSetupPlan plan, TaxProvider provider, string field, object from, object to)
     {
         plan.AddChange($"{GetFieldPrefix(provider.Code)}{field}", from, to);
+    }
+
+    // Settings that are not secrets can be sent in the section; a person enters secrets in the back office.
+    protected virtual string GetEmptySettingsFix(IList<string> names, int secretCount)
+    {
+        if (secretCount == 0)
+        {
+            return "Fill the settings in the tax section, or in the back office.";
+        }
+
+        return names.Count == 0
+            ? "A person enters the secret settings in the back office: secrets are never sent through the agent."
+            : "Fill the other settings in the tax section; a person enters the secret settings in the back office.";
     }
 }

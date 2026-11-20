@@ -199,7 +199,7 @@ public class TaxStoreSetupPartTests
         Assert.Equal("ACC-1", saved.Settings.Single(x => x.Name == _accountId.Name).Value);
     }
 
-    // Q6: a required setting left empty blocks going live, as for payment and shipping methods.
+    // A required setting left empty blocks going live, as for payment and shipping methods.
     [Fact]
     public async Task CheckAsync_ActiveProviderWithAnEmptyRequiredSetting_IsBlocking()
     {
@@ -217,6 +217,53 @@ public class TaxStoreSetupPartTests
         Assert.Equal(TestCode, finding.ObjectId);
     }
 
+    // With a tax section in the request, the check reads the providers as the plan leaves them.
+    [Fact]
+    public async Task CheckAsync_ReadsTheProvidersAsThePlanLeavesThem()
+    {
+        //Arrange
+        var part = CreatePart();
+        var context = CreateContext();
+        context.Store.Settings.Add(new ObjectSettingEntry { Name = TaxCalculationSetting, Value = true });
+        context.Plans[TaxStoreSetupPart.PartName] = await part.PlanAsync(context, new TaxStoreSetupSection { Provider = FixedRateCode });
+
+        //Act
+        var findings = await part.CheckAsync(context);
+
+        //Assert
+        Assert.DoesNotContain(findings, x => x.Id == "tax-no-active-provider");
+    }
+
+    // Settings sent without a provider go to the provider the cart uses, which stays as it is.
+    [Fact]
+    public async Task PlanAsync_SettingsWithoutAProvider_GoToTheActiveOne()
+    {
+        //Arrange
+        _saved.Add(new TestTaxProvider { StoreId = StoreId, IsActive = true });
+
+        //Act
+        var plan = await CreatePart().PlanAsync(CreateContext(), new TaxStoreSetupSection { Settings = new Dictionary<string, object> { [_rate.Name] = 0.19m } });
+
+        //Assert
+        Assert.Empty(plan.Errors);
+        Assert.Equal([$"providers.{TestCode}.{_rate.Name}"], plan.Changes.Select(x => x.Field));
+    }
+
+    // Spaces only are no code: only an empty text switches every provider off, as payment and shipping refuse a blank code.
+    [Fact]
+    public async Task PlanAsync_ACodeOfSpacesOnly_IsRefused()
+    {
+        //Arrange
+        _saved.Add(new FixedRateTaxProvider { StoreId = StoreId, IsActive = true });
+
+        //Act
+        var plan = await CreatePart().PlanAsync(CreateContext(), new TaxStoreSetupSection { Provider = "   " });
+
+        //Assert
+        Assert.Equal(["The tax provider code is spaces only. Send a code from get_store_setup_options, or an empty text to switch every provider off."], plan.Errors);
+        Assert.Empty(plan.Changes);
+    }
+
     private static StoreSetupContext CreateContext()
     {
         return new StoreSetupContext { Store = new Store { Id = StoreId, Name = "EU store", Settings = [] } };
@@ -230,7 +277,8 @@ public class TaxStoreSetupPartTests
         var description = typeof(TaxStoreSetupSection).GetProperty(nameof(TaxStoreSetupSection.Settings))!.GetCustomAttribute<DescriptionAttribute>()!.Description;
 
         //Assert
-        Assert.Contains("null returns a setting to its default, and a setting without a default takes a value instead.", description);
+        Assert.Contains("null returns a setting to its default, or clears a setting that has allowed values but no default, and a setting with neither " +
+            "takes a value instead.", description);
     }
 
     // A dry run, the plan made again at submit, and the apply never write to the settings manager's cached entries.
@@ -287,6 +335,6 @@ public class TaxStoreSetupPartTests
         settingsRegistrar.Setup(x => x.GetSettingsForType(nameof(TestTaxProvider))).Returns([_rate, _apiKey, _accountId]);
         settingsRegistrar.Setup(x => x.GetSettingsForType(nameof(FixedRateTaxProvider))).Returns([]);
 
-        return new TestableTaxStoreSetupPart(searchService.Object, _providerService.Object, settingsRegistrar.Object, new TestStoreSetupSettings());
+        return new TestableTaxStoreSetupPart(searchService.Object, _providerService.Object, settingsRegistrar.Object, new TestStoreSetupSettings(), new StoreSetupFindings());
     }
 }
