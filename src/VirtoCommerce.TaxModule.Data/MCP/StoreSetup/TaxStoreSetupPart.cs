@@ -200,7 +200,7 @@ public class TaxStoreSetupPart(
         // plan stays.
         foreach (var planned in taxPlan.Providers)
         {
-            var fields = taxPlan.GetChangedFields($"providers.{planned.Code}.");
+            var fields = taxPlan.GetChangedFields(GetFieldPrefix(planned.Code));
 
             if (fields.Count == 0)
             {
@@ -253,13 +253,19 @@ public class TaxStoreSetupPart(
         // Store's rules for a settings map, the same in every part: an unknown name, a secret or a wrong value is
         // refused, a null returns the default, and a value equal to the one in effect changes nothing.
         setupSettings.PlanSettings(plan, provider, GetSettingDescriptors(provider), settings,
-            $"providers.{provider.Code}.", $"Tax provider '{provider.Code}'", "get_store_setup_options");
+            GetFieldPrefix(provider.Code), $"Tax provider '{provider.Code}'", "get_store_setup_options");
     }
 
     // The providers installed on the platform: the types registered with the factory, as Tax's own search reads them.
     protected virtual IEnumerable<TaxProvider> GetInstalledProviders()
     {
         return AbstractTypeFactory<TaxProvider>.AllTypeInfos.Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name));
+    }
+
+    // The prefix of the plan's rows for one provider, such as "providers.<code>.": the rows are written and read with it.
+    protected static string GetFieldPrefix(string code)
+    {
+        return $"providers.{code}.";
     }
 
     // The store's saved providers, plus a new instance of every installed provider the store has not saved yet,
@@ -270,7 +276,8 @@ public class TaxStoreSetupPart(
         var criteria = AbstractTypeFactory<TaxProviderSearchCriteria>.TryCreateInstance();
         criteria.StoreIds = [storeId];
 
-        return (await taxProviderSearchService.SearchAllAsync(criteria)).Select(x => x.CloneTyped()).ToList();
+        // Read without the search's own copy: the copy is made here, once.
+        return (await taxProviderSearchService.SearchAllNoCloneAsync(criteria)).Select(x => x.CloneTyped()).ToList();
     }
 
     // The settings a provider takes: each tax module registers them for its provider's type name.
@@ -304,6 +311,6 @@ public class TaxStoreSetupPart(
 
     private static void AddChange(TaxStoreSetupPlan plan, TaxProvider provider, string field, object from, object to)
     {
-        plan.AddChange($"providers.{provider.Code}.{field}", from, to);
+        plan.AddChange($"{GetFieldPrefix(provider.Code)}{field}", from, to);
     }
 }

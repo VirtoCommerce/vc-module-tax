@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.MCP.Core.Models;
@@ -218,6 +220,17 @@ public class TaxStoreSetupPartTests
     private static StoreSetupContext CreateContext()
     {
         return new StoreSetupContext { Store = new Store { Id = StoreId, Name = "EU store", Settings = [] } };
+    }
+
+    // The settings map says what a null does, as Store's settings section does.
+    [Fact]
+    public void Settings_SaysWhatANullDoes()
+    {
+        //Act
+        var description = typeof(TaxStoreSetupSection).GetProperty(nameof(TaxStoreSetupSection.Settings))!.GetCustomAttribute<DescriptionAttribute>()!.Description;
+
+        //Assert
+        Assert.Contains("null returns a setting to its default, and a setting without a default takes a value instead.", description);
     }
 
     // A dry run, the plan made again at submit, and the apply never write to the settings manager's cached entries.
