@@ -262,13 +262,15 @@ public class TaxStoreSetupPart(
         return AbstractTypeFactory<TaxProvider>.AllTypeInfos.Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name));
     }
 
-    // The store's saved providers, plus a new instance of every installed provider the store has not saved yet.
+    // The store's saved providers, plus a new instance of every installed provider the store has not saved yet,
+    // each a copy: the settings of a provider the store has not saved are the settings manager's cached entries, which
+    // every unsaved provider of the type shares in every store, and planning, applying and saving write to the entries.
     protected virtual async Task<IList<TaxProvider>> GetStoreProvidersAsync(string storeId)
     {
         var criteria = AbstractTypeFactory<TaxProviderSearchCriteria>.TryCreateInstance();
         criteria.StoreIds = [storeId];
 
-        return await taxProviderSearchService.SearchAllAsync(criteria);
+        return (await taxProviderSearchService.SearchAllAsync(criteria)).Select(x => x.CloneTyped()).ToList();
     }
 
     // The settings a provider takes: each tax module registers them for its provider's type name.

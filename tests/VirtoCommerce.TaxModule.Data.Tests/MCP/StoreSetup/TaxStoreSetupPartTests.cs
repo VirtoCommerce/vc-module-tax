@@ -31,6 +31,8 @@ public class TaxStoreSetupPartTests
     // The providers the store has saved; the search adds a new instance of every installed provider the store has not saved.
     private readonly List<TaxProvider> _saved = [];
     private readonly Mock<ITaxProviderService> _providerService = new();
+    // The settings manager's cached entries: every read of an unsaved test method gets a new list of these instances.
+    private readonly List<ObjectSettingEntry> _cachedSettings = [];
 
     [Fact]
     public async Task GetChoicesAsync_ListsTheInstalledProviders_WithTheirSettingsThatAreNotSecrets()
@@ -218,6 +220,29 @@ public class TaxStoreSetupPartTests
         return new StoreSetupContext { Store = new Store { Id = StoreId, Name = "EU store", Settings = [] } };
     }
 
+    // A dry run, the plan made again at submit, and the apply never write to the settings manager's cached entries.
+    [Fact]
+    public async Task PlanAndApply_NeverWriteToTheSettingsManagersCachedEntries()
+    {
+        //Arrange
+        var cached = new ObjectSettingEntry(_rate) { Value = 0m };
+        _cachedSettings.Add(cached);
+        var section = new TaxStoreSetupSection { Provider = TestCode, Settings = new Dictionary<string, object> { [_rate.Name] = 9.5m } };
+
+        //Act
+        var dryRun = await CreatePart().PlanAsync(CreateContext(), section);
+        var atSubmit = await CreatePart().PlanAsync(CreateContext(), section);
+        await CreatePart().ApplyAsync(CreateContext(), atSubmit);
+
+        //Assert
+        Assert.Equal(0m, cached.Value);
+        Assert.Contains(dryRun.Changes, x => x.Field == $"providers.{TestCode}.{_rate.Name}");
+        Assert.Contains(atSubmit.Changes, x => x.Field == $"providers.{TestCode}.{_rate.Name}");
+        var savedProviders = (IList<TaxProvider>)_providerService.Invocations.Last(x => x.Method.Name == nameof(ITaxProviderService.SaveChangesAsync)).Arguments[0];
+        Assert.DoesNotContain(savedProviders.SelectMany(x => x.Settings), x => ReferenceEquals(x, cached));
+        Assert.Equal(9.5m, savedProviders.Single(x => x.Code == TestCode).Settings.Single(x => x.Name == _rate.Name).Value);
+    }
+
     private TaxStoreSetupPart CreatePart()
     {
         var searchService = new Mock<ITaxProviderSearchService>();
@@ -227,7 +252,7 @@ public class TaxStoreSetupPartTests
             {
                 // As the search service: copies when asked, the saved instances themselves otherwise.
                 var saved = _saved.Where(x => criteria.StoreIds.Contains(x.StoreId)).Select(x => clone ? x.CloneTyped() : x).ToList();
-                var installed = new TaxProvider[] { new FixedRateTaxProvider(), new TestTaxProvider() };
+                var installed = new TaxProvider[] { new FixedRateTaxProvider(), new TestTaxProvider { Settings = _cachedSettings.ToList() } };
                 var all = saved.Concat(installed.Where(x => !saved.Any(s => s.Code == x.Code))).ToList();
 
                 return new TaxProviderSearchResult { TotalCount = all.Count, Results = all.Skip(criteria.Skip).Take(criteria.Take).ToList() };
