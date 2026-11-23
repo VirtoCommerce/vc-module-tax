@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.MCP.Core.Models;
@@ -87,6 +88,66 @@ public class TaxStoreSetupPartTests
         Assert.Equal("tax-several-active-providers", finding.Id);
         Assert.Contains($"{FixedRateCode}, {TestCode}", finding.Evidence);
         Assert.Equal(FixedRateCode, state.Provider);
+    }
+
+    // The cart uses only the first active provider, so only its empty required settings block checkout. The warning
+    // about several active providers stays either way.
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task CheckAsync_WithSeveralActiveProviders_ChecksTheRequiredSettingsOfTheProviderInUseOnly(bool isIncompleteProviderInUse)
+    {
+        //Arrange
+        var complete = new FixedRateTaxProvider { StoreId = StoreId, IsActive = true };
+        var incomplete = new TestTaxProvider { StoreId = StoreId, IsActive = true };
+        _saved.Add(isIncompleteProviderInUse ? incomplete : complete);
+        _saved.Add(isIncompleteProviderInUse ? complete : incomplete);
+
+        //Act
+        var findings = await CreatePart().CheckAsync(CreateContext());
+
+        //Assert
+        Assert.Contains(findings, x => x.Id == "tax-several-active-providers");
+        Assert.Equal(isIncompleteProviderInUse, findings.Any(x => x.Id == "tax-provider-needs-settings"));
+    }
+
+    // The state gives the provider the cart uses with its settings in effect, and never a secret, not even its name.
+    [Fact]
+    public async Task GetStateAsync_GivesTheProviderInUse_WithItsSettings_WithoutSecrets()
+    {
+        //Arrange
+        _saved.Add(new TestTaxProvider
+        {
+            StoreId = StoreId,
+            IsActive = true,
+            Settings = [new ObjectSettingEntry(_accountId) { Value = "ACC-1" }, new ObjectSettingEntry(_apiKey) { Value = "avalara-key" }],
+        });
+
+        //Act
+        var state = (TaxStoreSetupSection)await CreatePart().GetStateAsync(CreateContext().Store);
+
+        //Assert
+        Assert.Equal(TestCode, state.Provider);
+        Assert.Equal(new Dictionary<string, object> { [_rate.Name] = 0m, [_accountId.Name] = "ACC-1" }, state.Settings);
+        Assert.DoesNotContain("avalara-key", JsonSerializer.Serialize(state));
+    }
+
+    // A store without an active provider has an empty provider and no settings; that state sent back changes nothing.
+    [Fact]
+    public async Task GetStateAsync_WithoutAnActiveProvider_IsEmpty_AndSentBackChangesNothing()
+    {
+        //Arrange
+        var part = CreatePart();
+
+        //Act
+        var state = (TaxStoreSetupSection)await part.GetStateAsync(CreateContext().Store);
+        var plan = await part.PlanAsync(CreateContext(), state);
+
+        //Assert
+        Assert.Equal("", state.Provider);
+        Assert.Empty(state.Settings);
+        Assert.Empty(plan.Errors);
+        Assert.Empty(plan.Changes);
     }
 
     // A setting the provider never saved has its default: sending that value changes nothing.

@@ -88,7 +88,8 @@ public class TaxStoreSetupPart(
 
     // 3. What is missing. With a tax section in the request, the check reads the providers as they will be after the
     // change; otherwise the saved ones. Which providers are active is a warning, as a store without tax can still take
-    // orders; a provider's empty required settings are critical, as taxes cannot be calculated at checkout.
+    // orders; the empty required settings of the provider the cart uses are critical, as taxes cannot be calculated at
+    // checkout.
     public virtual async Task<IList<McpFinding>> CheckAsync(StoreSetupContext context)
     {
         var store = context.Store;
@@ -118,28 +119,33 @@ public class TaxStoreSetupPart(
                 "Keep one tax provider active."));
         }
 
-        foreach (var provider in activeProviders)
+        // Only the provider the cart uses calculates taxes, so another active provider's empty settings block nothing.
+        var provider = GetUsedProvider(providers);
+
+        if (provider == null)
         {
-            // A secret is never named, not even when it is missing: a person enters it in the back office.
-            var (names, secretCount) = setupSettings.GetEmptyRequiredSettings(provider, GetSettingDescriptors(provider));
-
-            if (names.Count == 0 && secretCount == 0)
-            {
-                continue;
-            }
-
-            var finding = CreateFinding(store, "tax-provider-needs-settings", McpFindingSeverities.Critical,
-                $"The tax provider {provider.Code} needs its required settings",
-                "Taxes cannot be calculated at checkout until its required settings have values.",
-                setupFindings.GetEmptySettingsEvidence(names, secretCount),
-                GetEmptySettingsFix(names, secretCount));
-            finding.ManualOnly = names.Count == 0;
-            finding.ObjectType = nameof(TaxProvider);
-            finding.ObjectId = provider.Code;
-            finding.ObjectName = provider.Code;
-
-            findings.Add(finding);
+            return findings;
         }
+
+        // A secret is never named, not even when it is missing: a person enters it in the back office.
+        var (names, secretCount) = setupSettings.GetEmptyRequiredSettings(provider, GetSettingDescriptors(provider));
+
+        if (names.Count == 0 && secretCount == 0)
+        {
+            return findings;
+        }
+
+        var finding = CreateFinding(store, "tax-provider-needs-settings", McpFindingSeverities.Critical,
+            $"The tax provider {provider.Code} needs its required settings",
+            "Taxes cannot be calculated at checkout until its required settings have values.",
+            setupFindings.GetEmptySettingsEvidence(names, secretCount),
+            GetEmptySettingsFix(names, secretCount));
+        finding.ManualOnly = names.Count == 0;
+        finding.ObjectType = nameof(TaxProvider);
+        finding.ObjectId = provider.Code;
+        finding.ObjectName = provider.Code;
+
+        findings.Add(finding);
 
         return findings;
     }
@@ -271,9 +277,9 @@ public class TaxStoreSetupPart(
     }
 
     // The providers installed on the platform: the types registered with the factory, as Tax's own search reads them.
-    protected virtual IEnumerable<TaxProvider> GetInstalledProviders()
+    protected virtual IList<TaxProvider> GetInstalledProviders()
     {
-        return AbstractTypeFactory<TaxProvider>.AllTypeInfos.Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name));
+        return AbstractTypeFactory<TaxProvider>.AllTypeInfos.Select(x => AbstractTypeFactory<TaxProvider>.TryCreateInstance(x.Type.Name)).ToList();
     }
 
     // The prefix of the plan's rows for one provider, such as "providers.<code>.": the rows are written and read with it.
