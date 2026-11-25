@@ -16,9 +16,11 @@ using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.Platform.Data.MySql.Extensions;
 using VirtoCommerce.Platform.Data.PostgreSql.Extensions;
 using VirtoCommerce.Platform.Data.SqlServer.Extensions;
+using VirtoCommerce.StoreModule.Core.Extensions;
 using VirtoCommerce.TaxModule.Core.Model;
 using VirtoCommerce.TaxModule.Core.Services;
 using VirtoCommerce.TaxModule.Data.ExportImport;
+using VirtoCommerce.TaxModule.Data.MCP.StoreSetup;
 using VirtoCommerce.TaxModule.Data.MySql;
 using VirtoCommerce.TaxModule.Data.PostgreSql;
 using VirtoCommerce.TaxModule.Data.Provider;
@@ -61,6 +63,7 @@ namespace VirtoCommerce.TaxModule.Web
             serviceCollection.AddTransient<ITaxProviderService, TaxProviderService>();
             serviceCollection.AddTransient<ITaxProviderRegistrar, TaxProviderService>();
             serviceCollection.AddTransient<ITaxProviderSearchService, TaxProviderSearchService>();
+            serviceCollection.AddStoreSetupPart<TaxStoreSetupPart>();
             serviceCollection.AddTransient<TaxExportImport>();
         }
 
